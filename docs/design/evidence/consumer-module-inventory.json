@@ -1,0 +1,2634 @@
+{
+  "source": "https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced",
+  "commit": "a8c781fd64faab17fedfd46e0615a2609307f163",
+  "verification": "source inventory; endpoint existence is not a successful account test",
+  "modules": [
+    {
+      "module": "activate_init_profile",
+      "paths": [
+        "/api/activate/initProfile"
+      ]
+    },
+    {
+      "module": "ad_get",
+      "paths": [
+        "/api/ad/get"
+      ]
+    },
+    {
+      "module": "ad_listening_rights",
+      "paths": [
+        "/api/ad/homepage/free/tab/extend/v2"
+      ]
+    },
+    {
+      "module": "ad_listening_rights_gain",
+      "paths": [
+        "/api/ad/listening/rights/gain"
+      ]
+    },
+    {
+      "module": "aidj_content_rcmd",
+      "paths": [
+        "/api/aidj/content/rcmd/info"
+      ]
+    },
+    {
+      "module": "album",
+      "paths": [
+        "/api/v1/album/${query.id}"
+      ]
+    },
+    {
+      "module": "album_detail",
+      "paths": [
+        "/api/vipmall/albumproduct/detail"
+      ]
+    },
+    {
+      "module": "album_detail_dynamic",
+      "paths": [
+        "/api/album/detail/dynamic"
+      ]
+    },
+    {
+      "module": "album_list",
+      "paths": [
+        "/api/vipmall/albumproduct/list"
+      ]
+    },
+    {
+      "module": "album_list_style",
+      "paths": [
+        "/api/vipmall/appalbum/album/style"
+      ]
+    },
+    {
+      "module": "album_new",
+      "paths": [
+        "/api/album/new"
+      ]
+    },
+    {
+      "module": "album_newest",
+      "paths": [
+        "/api/discovery/newAlbum"
+      ]
+    },
+    {
+      "module": "album_privilege",
+      "paths": [
+        "/api/album/privilege"
+      ]
+    },
+    {
+      "module": "album_songsaleboard",
+      "paths": [
+        "/api/feealbum/songsaleboard/${type}/type"
+      ]
+    },
+    {
+      "module": "album_sub",
+      "paths": [
+        "/api/album/${query.t}"
+      ]
+    },
+    {
+      "module": "album_sublist",
+      "paths": [
+        "/api/album/sublist"
+      ]
+    },
+    {
+      "module": "api",
+      "paths": []
+    },
+    {
+      "module": "artist_album",
+      "paths": [
+        "/api/artist/albums/${query.id}"
+      ]
+    },
+    {
+      "module": "artist_desc",
+      "paths": [
+        "/api/artist/introduction"
+      ]
+    },
+    {
+      "module": "artist_detail",
+      "paths": [
+        "/api/artist/head/info/get"
+      ]
+    },
+    {
+      "module": "artist_detail_dynamic",
+      "paths": [
+        "/api/artist/detail/dynamic"
+      ]
+    },
+    {
+      "module": "artist_fans",
+      "paths": [
+        "/api/artist/fans/get"
+      ]
+    },
+    {
+      "module": "artist_follow_count",
+      "paths": [
+        "/api/artist/follow/count/get"
+      ]
+    },
+    {
+      "module": "artist_list",
+      "paths": [
+        "/api/v1/artist/list"
+      ]
+    },
+    {
+      "module": "artist_mv",
+      "paths": [
+        "/api/artist/mvs"
+      ]
+    },
+    {
+      "module": "artist_new_mv",
+      "paths": [
+        "/api/sub/artist/new/works/mv/list"
+      ]
+    },
+    {
+      "module": "artist_new_song",
+      "paths": [
+        "/api/sub/artist/new/works/song/list"
+      ]
+    },
+    {
+      "module": "artist_new_song_mv_list_v2",
+      "paths": [
+        "/api/sub/artist/new/works/song-mv/list/v2"
+      ]
+    },
+    {
+      "module": "artist_new_song_playall",
+      "paths": [
+        "/api/sub/artist/new/works/song/playall"
+      ]
+    },
+    {
+      "module": "artist_songs",
+      "paths": [
+        "/api/v1/artist/songs"
+      ]
+    },
+    {
+      "module": "artist_sub",
+      "paths": [
+        "/api/artist/${query.t}"
+      ]
+    },
+    {
+      "module": "artist_sublist",
+      "paths": [
+        "/api/artist/sublist"
+      ]
+    },
+    {
+      "module": "artist_top_song",
+      "paths": [
+        "/api/artist/top/song"
+      ]
+    },
+    {
+      "module": "artist_video",
+      "paths": [
+        "/api/mlog/artist/video"
+      ]
+    },
+    {
+      "module": "artists",
+      "paths": [
+        "/api/v1/artist/${query.id}"
+      ]
+    },
+    {
+      "module": "audio_match",
+      "paths": []
+    },
+    {
+      "module": "avatar_upload",
+      "paths": [
+        "/api/user/avatar/upload/v1"
+      ]
+    },
+    {
+      "module": "banner",
+      "paths": [
+        "/api/v2/banner/get"
+      ]
+    },
+    {
+      "module": "batch",
+      "paths": [
+        "/api/batch"
+      ]
+    },
+    {
+      "module": "broadcast_category_region_get",
+      "paths": [
+        "/api/voice/broadcast/category/region/get"
+      ]
+    },
+    {
+      "module": "broadcast_channel_collect_list",
+      "paths": [
+        "/api/content/channel/collect/list"
+      ]
+    },
+    {
+      "module": "broadcast_channel_currentinfo",
+      "paths": [
+        "/api/voice/broadcast/channel/currentinfo"
+      ]
+    },
+    {
+      "module": "broadcast_channel_list",
+      "paths": [
+        "/api/voice/broadcast/channel/list"
+      ]
+    },
+    {
+      "module": "broadcast_sub",
+      "paths": [
+        "/api/content/interact/collect"
+      ]
+    },
+    {
+      "module": "calendar",
+      "paths": [
+        "/api/mcalendar/detail"
+      ]
+    },
+    {
+      "module": "captcha_safe_sent",
+      "paths": [
+        "/api/sms/captcha/safe/sent"
+      ]
+    },
+    {
+      "module": "captcha_sent",
+      "paths": [
+        "/api/sms/captcha/sent"
+      ]
+    },
+    {
+      "module": "captcha_sent_v1",
+      "paths": [
+        "/api/middle/captcha/sent/v1"
+      ]
+    },
+    {
+      "module": "captcha_verify",
+      "paths": [
+        "/api/sms/captcha/verify"
+      ]
+    },
+    {
+      "module": "cellphone_existence_check",
+      "paths": [
+        "/api/cellphone/existence/check"
+      ]
+    },
+    {
+      "module": "chart_detail",
+      "paths": [
+        "/api/chart/detail"
+      ]
+    },
+    {
+      "module": "chart_song_detail",
+      "paths": [
+        "/api/chart/song/detail"
+      ]
+    },
+    {
+      "module": "check_music",
+      "paths": [
+        "/api/song/enhance/player/url"
+      ]
+    },
+    {
+      "module": "cloud",
+      "paths": [
+        "/api/cloud/pub/v2",
+        "/api/cloud/upload/check",
+        "/api/nos/token/alloc",
+        "/api/upload/cloud/info/v2"
+      ]
+    },
+    {
+      "module": "cloud_import",
+      "paths": [
+        "/api/cloud/upload/check/v2",
+        "/api/cloud/user/song/import"
+      ]
+    },
+    {
+      "module": "cloud_lyric_get",
+      "paths": [
+        "/api/cloud/lyric/get"
+      ]
+    },
+    {
+      "module": "cloud_match",
+      "paths": [
+        "/api/cloud/user/song/match"
+      ]
+    },
+    {
+      "module": "cloud_upload_complete",
+      "paths": [
+        "/api/cloud/pub/v2",
+        "/api/upload/cloud/info/v2"
+      ]
+    },
+    {
+      "module": "cloud_upload_token",
+      "paths": [
+        "/api/cloud/upload/check",
+        "/api/nos/token/alloc"
+      ]
+    },
+    {
+      "module": "cloudsearch",
+      "paths": [
+        "/api/cloudsearch/pc"
+      ]
+    },
+    {
+      "module": "comment",
+      "paths": [
+        "/api/resource/comments/${query.t}"
+      ]
+    },
+    {
+      "module": "comment_add",
+      "paths": [
+        "/api/resource/comments/add"
+      ]
+    },
+    {
+      "module": "comment_album",
+      "paths": [
+        "/api/v1/resource/comments/R_AL_3_${query.id}"
+      ]
+    },
+    {
+      "module": "comment_delete",
+      "paths": [
+        "/api/resource/comments/delete"
+      ]
+    },
+    {
+      "module": "comment_dj",
+      "paths": [
+        "/api/v1/resource/comments/A_DJ_1_${query.id}"
+      ]
+    },
+    {
+      "module": "comment_event",
+      "paths": [
+        "/api/v1/resource/comments/${query.threadId}"
+      ]
+    },
+    {
+      "module": "comment_floor",
+      "paths": [
+        "/api/resource/comment/floor/get"
+      ]
+    },
+    {
+      "module": "comment_hot",
+      "paths": [
+        "/api/v1/resource/hotcomments/${query.type}${query.id}"
+      ]
+    },
+    {
+      "module": "comment_hug_list",
+      "paths": [
+        "/api/v2/resource/comments/hug/list"
+      ]
+    },
+    {
+      "module": "comment_info_list",
+      "paths": [
+        "/api/resource/commentInfo/list"
+      ]
+    },
+    {
+      "module": "comment_like",
+      "paths": [
+        "/api/v1/comment/${query.t}"
+      ]
+    },
+    {
+      "module": "comment_music",
+      "paths": [
+        "/api/v1/resource/comments/R_SO_4_${query.id}"
+      ]
+    },
+    {
+      "module": "comment_mv",
+      "paths": [
+        "/api/v1/resource/comments/R_MV_5_${query.id}"
+      ]
+    },
+    {
+      "module": "comment_new",
+      "paths": [
+        "/api/v2/resource/comments"
+      ]
+    },
+    {
+      "module": "comment_playlist",
+      "paths": [
+        "/api/v1/resource/comments/A_PL_0_${query.id}"
+      ]
+    },
+    {
+      "module": "comment_reply",
+      "paths": [
+        "/api/v1/resource/comments/reply"
+      ]
+    },
+    {
+      "module": "comment_report",
+      "paths": [
+        "/api/report/reportcomment"
+      ]
+    },
+    {
+      "module": "comment_video",
+      "paths": [
+        "/api/v1/resource/comments/R_VI_62_${query.id}"
+      ]
+    },
+    {
+      "module": "countries_code_list",
+      "paths": [
+        "/api/lbs/countries/v1"
+      ]
+    },
+    {
+      "module": "creator_authinfo_get",
+      "paths": [
+        "/api/user/creator/authinfo/get"
+      ]
+    },
+    {
+      "module": "daily_signin",
+      "paths": [
+        "/api/point/dailyTask"
+      ]
+    },
+    {
+      "module": "decrypt",
+      "paths": []
+    },
+    {
+      "module": "device_kickoff",
+      "paths": [
+        "/api/middle/user/security/device/kickoff"
+      ]
+    },
+    {
+      "module": "device_list",
+      "paths": [
+        "/api/middle/user/device/list"
+      ]
+    },
+    {
+      "module": "deviceinfo_center_upload",
+      "paths": [
+        "/api/deviceinfo/center/upload"
+      ]
+    },
+    {
+      "module": "digitalAlbum_detail",
+      "paths": [
+        "/api/vipmall/albumproduct/detail"
+      ]
+    },
+    {
+      "module": "digitalAlbum_ordering",
+      "paths": [
+        "/api/ordering/web/digital"
+      ]
+    },
+    {
+      "module": "digitalAlbum_purchased",
+      "paths": [
+        "/api/digitalAlbum/purchased"
+      ]
+    },
+    {
+      "module": "digitalAlbum_sales",
+      "paths": [
+        "/api/vipmall/albumproduct/album/query/sales"
+      ]
+    },
+    {
+      "module": "djRadio_top",
+      "paths": [
+        "/api/expert/worksdata/works/top/get"
+      ]
+    },
+    {
+      "module": "dj_banner",
+      "paths": [
+        "/api/djradio/banner/get"
+      ]
+    },
+    {
+      "module": "dj_category_excludehot",
+      "paths": [
+        "/api/djradio/category/excludehot"
+      ]
+    },
+    {
+      "module": "dj_category_recommend",
+      "paths": [
+        "/api/djradio/home/category/recommend"
+      ]
+    },
+    {
+      "module": "dj_catelist",
+      "paths": [
+        "/api/djradio/category/get"
+      ]
+    },
+    {
+      "module": "dj_detail",
+      "paths": [
+        "/api/djradio/v2/get"
+      ]
+    },
+    {
+      "module": "dj_difm_all_style_channel",
+      "paths": [
+        "/api/dj/difm/all/style/channel/v2"
+      ]
+    },
+    {
+      "module": "dj_difm_channel_subscribe",
+      "paths": [
+        "/api/dj/difm/channel/subscribe"
+      ]
+    },
+    {
+      "module": "dj_difm_channel_unsubscribe",
+      "paths": [
+        "/api/dj/difm/channel/unsubscribe"
+      ]
+    },
+    {
+      "module": "dj_difm_playing_tracks_list",
+      "paths": [
+        "/api/dj/difm/playing/tracks/list"
+      ]
+    },
+    {
+      "module": "dj_difm_subscribe_channels_get",
+      "paths": [
+        "/api/dj/difm/subscribe/channels/get/v2"
+      ]
+    },
+    {
+      "module": "dj_hot",
+      "paths": [
+        "/api/djradio/hot/v1"
+      ]
+    },
+    {
+      "module": "dj_paygift",
+      "paths": [
+        "/api/djradio/home/paygift/list"
+      ]
+    },
+    {
+      "module": "dj_personalize_recommend",
+      "paths": [
+        "/api/djradio/personalize/rcmd"
+      ]
+    },
+    {
+      "module": "dj_program",
+      "paths": [
+        "/api/dj/program/byradio"
+      ]
+    },
+    {
+      "module": "dj_program_detail",
+      "paths": [
+        "/api/dj/program/detail"
+      ]
+    },
+    {
+      "module": "dj_program_toplist",
+      "paths": [
+        "/api/program/toplist/v1"
+      ]
+    },
+    {
+      "module": "dj_program_toplist_hours",
+      "paths": [
+        "/api/djprogram/toplist/hours"
+      ]
+    },
+    {
+      "module": "dj_radio_hot",
+      "paths": [
+        "/api/djradio/hot"
+      ]
+    },
+    {
+      "module": "dj_recommend",
+      "paths": [
+        "/api/djradio/recommend/v1"
+      ]
+    },
+    {
+      "module": "dj_recommend_type",
+      "paths": [
+        "/api/djradio/recommend"
+      ]
+    },
+    {
+      "module": "dj_sub",
+      "paths": [
+        "/api/djradio/${query.t}"
+      ]
+    },
+    {
+      "module": "dj_sublist",
+      "paths": [
+        "/api/djradio/get/subed"
+      ]
+    },
+    {
+      "module": "dj_subscriber",
+      "paths": [
+        "/api/djradio/subscriber"
+      ]
+    },
+    {
+      "module": "dj_today_perfered",
+      "paths": [
+        "/api/djradio/home/today/perfered"
+      ]
+    },
+    {
+      "module": "dj_toplist",
+      "paths": [
+        "/api/djradio/toplist"
+      ]
+    },
+    {
+      "module": "dj_toplist_hours",
+      "paths": [
+        "/api/dj/toplist/hours"
+      ]
+    },
+    {
+      "module": "dj_toplist_newcomer",
+      "paths": [
+        "/api/dj/toplist/newcomer"
+      ]
+    },
+    {
+      "module": "dj_toplist_pay",
+      "paths": [
+        "/api/djradio/toplist/pay"
+      ]
+    },
+    {
+      "module": "dj_toplist_popular",
+      "paths": [
+        "/api/dj/toplist/popular"
+      ]
+    },
+    {
+      "module": "eapi_decrypt",
+      "paths": []
+    },
+    {
+      "module": "event",
+      "paths": [
+        "/api/v1/event/get"
+      ]
+    },
+    {
+      "module": "event_del",
+      "paths": [
+        "/api/event/delete"
+      ]
+    },
+    {
+      "module": "event_forward",
+      "paths": [
+        "/api/event/forward"
+      ]
+    },
+    {
+      "module": "event_privacy",
+      "paths": [
+        "/api/event/privacy/op"
+      ]
+    },
+    {
+      "module": "fanscenter_basicinfo_age_get",
+      "paths": [
+        "/api/fanscenter/basicinfo/age/get"
+      ]
+    },
+    {
+      "module": "fanscenter_basicinfo_gender_get",
+      "paths": [
+        "/api/fanscenter/basicinfo/gender/get"
+      ]
+    },
+    {
+      "module": "fanscenter_basicinfo_province_get",
+      "paths": [
+        "/api/fanscenter/basicinfo/province/get"
+      ]
+    },
+    {
+      "module": "fanscenter_overview_get",
+      "paths": [
+        "/api/fanscenter/overview/get"
+      ]
+    },
+    {
+      "module": "fanscenter_trend_list",
+      "paths": [
+        "/api/fanscenter/trend/list"
+      ]
+    },
+    {
+      "module": "fm_trash",
+      "paths": [
+        "/api/radio/trash/add"
+      ]
+    },
+    {
+      "module": "follow",
+      "paths": [
+        "/api/user/${query.t}/${query.id}"
+      ]
+    },
+    {
+      "module": "get_userids",
+      "paths": [
+        "/api/user/getUserIds"
+      ]
+    },
+    {
+      "module": "history_recommend_songs",
+      "paths": [
+        "/api/discovery/recommend/songs/history/recent"
+      ]
+    },
+    {
+      "module": "history_recommend_songs_detail",
+      "paths": [
+        "/api/discovery/recommend/songs/history/detail"
+      ]
+    },
+    {
+      "module": "homepage_block_page",
+      "paths": [
+        "/api/homepage/block/page"
+      ]
+    },
+    {
+      "module": "homepage_dragon_ball",
+      "paths": [
+        "/api/homepage/dragon/ball/static"
+      ]
+    },
+    {
+      "module": "hot_topic",
+      "paths": [
+        "/api/act/hot"
+      ]
+    },
+    {
+      "module": "hug_comment",
+      "paths": [
+        "/api/v2/resource/comments/hug/listener"
+      ]
+    },
+    {
+      "module": "inner_version",
+      "paths": []
+    },
+    {
+      "module": "lbs_city_code",
+      "paths": [
+        "/api/lbs/city/code"
+      ]
+    },
+    {
+      "module": "like",
+      "paths": [
+        "/api/radio/like"
+      ]
+    },
+    {
+      "module": "like_v1",
+      "paths": [
+        "/api/v1/radio/like"
+      ]
+    },
+    {
+      "module": "likelist",
+      "paths": [
+        "/api/song/like/get"
+      ]
+    },
+    {
+      "module": "listen_data_realtime_report",
+      "paths": [
+        "/api/content/activity/listen/data/realtime/report"
+      ]
+    },
+    {
+      "module": "listen_data_report",
+      "paths": [
+        "/api/content/activity/listen/data/report"
+      ]
+    },
+    {
+      "module": "listen_data_song_play_rank",
+      "paths": [
+        "/api/content/activity/listen/data/song/play/rank"
+      ]
+    },
+    {
+      "module": "listen_data_today_song",
+      "paths": [
+        "/api/content/activity/listen/data/today/song/play/rank"
+      ]
+    },
+    {
+      "module": "listen_data_total",
+      "paths": [
+        "/api/content/activity/listen/data/total"
+      ]
+    },
+    {
+      "module": "listen_data_year_report",
+      "paths": [
+        "/api/content/activity/listen/data/year/report"
+      ]
+    },
+    {
+      "module": "listentogether_accept",
+      "paths": [
+        "/api/listen/together/play/invitation/accept"
+      ]
+    },
+    {
+      "module": "listentogether_end",
+      "paths": [
+        "/api/listen/together/end/v2"
+      ]
+    },
+    {
+      "module": "listentogether_heatbeat",
+      "paths": [
+        "/api/listen/together/heartbeat"
+      ]
+    },
+    {
+      "module": "listentogether_play_command",
+      "paths": [
+        "/api/listen/together/play/command/report"
+      ]
+    },
+    {
+      "module": "listentogether_room_check",
+      "paths": [
+        "/api/listen/together/room/check"
+      ]
+    },
+    {
+      "module": "listentogether_room_create",
+      "paths": [
+        "/api/listen/together/room/create"
+      ]
+    },
+    {
+      "module": "listentogether_status",
+      "paths": [
+        "/api/listen/together/status/get"
+      ]
+    },
+    {
+      "module": "listentogether_sync_list_command",
+      "paths": [
+        "/api/listen/together/sync/list/command/report"
+      ]
+    },
+    {
+      "module": "listentogether_sync_playlist_get",
+      "paths": [
+        "/api/listen/together/sync/playlist/get"
+      ]
+    },
+    {
+      "module": "login",
+      "paths": [
+        "/api/w/login"
+      ]
+    },
+    {
+      "module": "login_cellphone",
+      "paths": [
+        "/api/w/login/cellphone"
+      ]
+    },
+    {
+      "module": "login_qr_check",
+      "paths": [
+        "/api/login/qrcode/client/login"
+      ]
+    },
+    {
+      "module": "login_qr_create",
+      "paths": []
+    },
+    {
+      "module": "login_qr_key",
+      "paths": [
+        "/api/login/qrcode/unikey"
+      ]
+    },
+    {
+      "module": "login_refresh",
+      "paths": [
+        "/api/login/token/refresh"
+      ]
+    },
+    {
+      "module": "login_status",
+      "paths": [
+        "/api/w/nuser/account/get"
+      ]
+    },
+    {
+      "module": "logout",
+      "paths": [
+        "/api/logout"
+      ]
+    },
+    {
+      "module": "lyric",
+      "paths": [
+        "/api/song/lyric"
+      ]
+    },
+    {
+      "module": "lyric_new",
+      "paths": [
+        "/api/song/lyric/v1"
+      ]
+    },
+    {
+      "module": "middle_play_do_lottery",
+      "paths": [
+        "/api/middle/play/do/lottery"
+      ]
+    },
+    {
+      "module": "middle_play_lottery_remain_chance",
+      "paths": [
+        "/api/middle/play/lottery/remain/chance"
+      ]
+    },
+    {
+      "module": "mlog_music_rcmd",
+      "paths": [
+        "/api/mlog/rcmd/feed/list"
+      ]
+    },
+    {
+      "module": "mlog_to_video",
+      "paths": [
+        "/api/mlog/video/convert/id"
+      ]
+    },
+    {
+      "module": "mlog_url",
+      "paths": [
+        "/api/mlog/detail/v1"
+      ]
+    },
+    {
+      "module": "msg_comments",
+      "paths": [
+        "/api/v1/user/comments/${query.uid}"
+      ]
+    },
+    {
+      "module": "msg_forwards",
+      "paths": [
+        "/api/forwards/get"
+      ]
+    },
+    {
+      "module": "msg_notices",
+      "paths": [
+        "/api/msg/notices"
+      ]
+    },
+    {
+      "module": "msg_private",
+      "paths": [
+        "/api/msg/private/users"
+      ]
+    },
+    {
+      "module": "msg_private_history",
+      "paths": [
+        "/api/msg/private/history"
+      ]
+    },
+    {
+      "module": "msg_recentcontact",
+      "paths": [
+        "/api/msg/recentcontact/get"
+      ]
+    },
+    {
+      "module": "music_first_listen_info",
+      "paths": [
+        "/api/content/activity/music/first/listen/info"
+      ]
+    },
+    {
+      "module": "musician_cloudbean",
+      "paths": [
+        "/api/cloudbean/get"
+      ]
+    },
+    {
+      "module": "musician_cloudbean_obtain",
+      "paths": [
+        "/api/nmusician/workbench/mission/reward/obtain/new"
+      ]
+    },
+    {
+      "module": "musician_data_overview",
+      "paths": [
+        "/api/creator/musician/statistic/data/overview/get"
+      ]
+    },
+    {
+      "module": "musician_play_trend",
+      "paths": [
+        "/api/creator/musician/play/count/statistic/data/trend/get"
+      ]
+    },
+    {
+      "module": "musician_sign",
+      "paths": [
+        "/api/creator/user/access"
+      ]
+    },
+    {
+      "module": "musician_tasks",
+      "paths": [
+        "/api/nmusician/workbench/mission/cycle/list"
+      ]
+    },
+    {
+      "module": "musician_tasks_new",
+      "paths": []
+    },
+    {
+      "module": "musician_vip_tasks",
+      "paths": [
+        "/api/nmusician/workbench/special/right/vip/info"
+      ]
+    },
+    {
+      "module": "mv_all",
+      "paths": [
+        "/api/mv/all"
+      ]
+    },
+    {
+      "module": "mv_detail",
+      "paths": [
+        "/api/v1/mv/detail"
+      ]
+    },
+    {
+      "module": "mv_detail_info",
+      "paths": [
+        "/api/comment/commentthread/info"
+      ]
+    },
+    {
+      "module": "mv_exclusive_rcmd",
+      "paths": [
+        "/api/mv/exclusive/rcmd"
+      ]
+    },
+    {
+      "module": "mv_first",
+      "paths": [
+        "/api/mv/first"
+      ]
+    },
+    {
+      "module": "mv_sub",
+      "paths": [
+        "/api/mv/${query.t}"
+      ]
+    },
+    {
+      "module": "mv_sublist",
+      "paths": [
+        "/api/cloudvideo/allvideo/sublist"
+      ]
+    },
+    {
+      "module": "mv_url",
+      "paths": [
+        "/api/song/enhance/play/mv/url"
+      ]
+    },
+    {
+      "module": "nickname_check",
+      "paths": [
+        "/api/nickname/duplicated"
+      ]
+    },
+    {
+      "module": "personal_fm",
+      "paths": [
+        "/api/v1/radio/get"
+      ]
+    },
+    {
+      "module": "personal_fm_mode",
+      "paths": [
+        "/api/v1/radio/get"
+      ]
+    },
+    {
+      "module": "personalized",
+      "paths": [
+        "/api/personalized/playlist"
+      ]
+    },
+    {
+      "module": "personalized_djprogram",
+      "paths": [
+        "/api/personalized/djprogram"
+      ]
+    },
+    {
+      "module": "personalized_mv",
+      "paths": [
+        "/api/personalized/mv"
+      ]
+    },
+    {
+      "module": "personalized_newsong",
+      "paths": [
+        "/api/personalized/newsong"
+      ]
+    },
+    {
+      "module": "personalized_privatecontent",
+      "paths": [
+        "/api/personalized/privatecontent"
+      ]
+    },
+    {
+      "module": "personalized_privatecontent_list",
+      "paths": [
+        "/api/v2/privatecontent/list"
+      ]
+    },
+    {
+      "module": "pl_count",
+      "paths": [
+        "/api/pl/count"
+      ]
+    },
+    {
+      "module": "playlist_category_list",
+      "paths": [
+        "/api/playlist/category/list"
+      ]
+    },
+    {
+      "module": "playlist_catlist",
+      "paths": [
+        "/api/playlist/catalogue"
+      ]
+    },
+    {
+      "module": "playlist_cover_update",
+      "paths": [
+        "/api/playlist/cover/update"
+      ]
+    },
+    {
+      "module": "playlist_create",
+      "paths": [
+        "/api/playlist/create"
+      ]
+    },
+    {
+      "module": "playlist_delete",
+      "paths": [
+        "/api/playlist/remove"
+      ]
+    },
+    {
+      "module": "playlist_desc_update",
+      "paths": [
+        "/api/playlist/desc/update"
+      ]
+    },
+    {
+      "module": "playlist_detail",
+      "paths": [
+        "/api/v6/playlist/detail"
+      ]
+    },
+    {
+      "module": "playlist_detail_dynamic",
+      "paths": [
+        "/api/playlist/detail/dynamic"
+      ]
+    },
+    {
+      "module": "playlist_detail_rcmd_get",
+      "paths": [
+        "/api/playlist/detail/rcmd/get"
+      ]
+    },
+    {
+      "module": "playlist_highquality_tags",
+      "paths": [
+        "/api/playlist/highquality/tags"
+      ]
+    },
+    {
+      "module": "playlist_hot",
+      "paths": [
+        "/api/playlist/hottags"
+      ]
+    },
+    {
+      "module": "playlist_import_name_task_create",
+      "paths": [
+        "/api/playlist/import/name/task/create"
+      ]
+    },
+    {
+      "module": "playlist_import_task_status",
+      "paths": [
+        "/api/playlist/import/task/status/v2"
+      ]
+    },
+    {
+      "module": "playlist_mylike",
+      "paths": [
+        "/api/mlog/playlist/mylike/bytime/get"
+      ]
+    },
+    {
+      "module": "playlist_name_update",
+      "paths": [
+        "/api/playlist/update/name"
+      ]
+    },
+    {
+      "module": "playlist_order_update",
+      "paths": [
+        "/api/playlist/order/update"
+      ]
+    },
+    {
+      "module": "playlist_privacy",
+      "paths": [
+        "/api/playlist/update/privacy"
+      ]
+    },
+    {
+      "module": "playlist_subscribe",
+      "paths": [
+        "/api/playlist/${path}"
+      ]
+    },
+    {
+      "module": "playlist_subscribers",
+      "paths": [
+        "/api/playlist/subscribers"
+      ]
+    },
+    {
+      "module": "playlist_tags_update",
+      "paths": [
+        "/api/playlist/tags/update"
+      ]
+    },
+    {
+      "module": "playlist_track_add",
+      "paths": [
+        "/api/playlist/track/add"
+      ]
+    },
+    {
+      "module": "playlist_track_all",
+      "paths": [
+        "/api/v3/song/detail",
+        "/api/v6/playlist/detail"
+      ]
+    },
+    {
+      "module": "playlist_track_delete",
+      "paths": [
+        "/api/playlist/track/delete"
+      ]
+    },
+    {
+      "module": "playlist_tracks",
+      "paths": [
+        "/api/playlist/manipulate/tracks"
+      ]
+    },
+    {
+      "module": "playlist_update",
+      "paths": [
+        "/api/batch",
+        "/api/playlist/desc/update",
+        "/api/playlist/tags/update",
+        "/api/playlist/update/name"
+      ]
+    },
+    {
+      "module": "playlist_update_playcount",
+      "paths": [
+        "/api/playlist/update/playcount"
+      ]
+    },
+    {
+      "module": "playlist_video_recent",
+      "paths": [
+        "/api/playlist/video/recent"
+      ]
+    },
+    {
+      "module": "playmode_intelligence_list",
+      "paths": [
+        "/api/playmode/intelligence/list"
+      ]
+    },
+    {
+      "module": "playmode_song_vector",
+      "paths": [
+        "/api/playmode/song/vector/get"
+      ]
+    },
+    {
+      "module": "program_recommend",
+      "paths": [
+        "/api/program/recommend/v1"
+      ]
+    },
+    {
+      "module": "radio_sport_get",
+      "paths": [
+        "/api/radio/sport/get"
+      ]
+    },
+    {
+      "module": "rebind",
+      "paths": [
+        "/api/user/replaceCellphone"
+      ]
+    },
+    {
+      "module": "recent_listen_list",
+      "paths": [
+        "/api/pc/recent/listen/list"
+      ]
+    },
+    {
+      "module": "recommend_resource",
+      "paths": [
+        "/api/v1/discovery/recommend/resource"
+      ]
+    },
+    {
+      "module": "recommend_songs",
+      "paths": [
+        "/api/v3/discovery/recommend/songs"
+      ]
+    },
+    {
+      "module": "recommend_songs_dislike",
+      "paths": [
+        "/api/v2/discovery/recommend/dislike"
+      ]
+    },
+    {
+      "module": "record_recent_album",
+      "paths": [
+        "/api/play-record/album/list"
+      ]
+    },
+    {
+      "module": "record_recent_dj",
+      "paths": [
+        "/api/play-record/djradio/list"
+      ]
+    },
+    {
+      "module": "record_recent_playlist",
+      "paths": [
+        "/api/play-record/playlist/list"
+      ]
+    },
+    {
+      "module": "record_recent_song",
+      "paths": [
+        "/api/play-record/song/list"
+      ]
+    },
+    {
+      "module": "record_recent_video",
+      "paths": [
+        "/api/play-record/newvideo/list"
+      ]
+    },
+    {
+      "module": "record_recent_voice",
+      "paths": [
+        "/api/play-record/voice/list"
+      ]
+    },
+    {
+      "module": "register_anonimous",
+      "paths": [
+        "/api/register/anonimous"
+      ]
+    },
+    {
+      "module": "register_cellphone",
+      "paths": [
+        "/api/w/register/cellphone"
+      ]
+    },
+    {
+      "module": "register_checktoken_v2",
+      "paths": []
+    },
+    {
+      "module": "register_checktoken_v3",
+      "paths": []
+    },
+    {
+      "module": "register_xeapikey",
+      "paths": [
+        "/api/gorilla/anti/crawler/security/key/get"
+      ]
+    },
+    {
+      "module": "related_allvideo",
+      "paths": [
+        "/api/cloudvideo/v1/allvideo/rcmd"
+      ]
+    },
+    {
+      "module": "related_playlist",
+      "paths": []
+    },
+    {
+      "module": "relay_play_state_submit",
+      "paths": [
+        "/api/relay/play/state/submit"
+      ]
+    },
+    {
+      "module": "rep_ugc_activity_collect",
+      "paths": [
+        "/api/rep/ugc/activity/collect"
+      ]
+    },
+    {
+      "module": "rep_ugc_activity_get",
+      "paths": [
+        "/api/rep/ugc/activity/get"
+      ]
+    },
+    {
+      "module": "rep_ugc_exam_info_get",
+      "paths": [
+        "/api/rep/ugc/exam/info/get"
+      ]
+    },
+    {
+      "module": "rep_ugc_exam_question_single_get",
+      "paths": [
+        "/api/rep/ugc/exam/question/single/get"
+      ]
+    },
+    {
+      "module": "rep_ugc_exam_result_get",
+      "paths": [
+        "/api/rep/ugc/exam/result/get"
+      ]
+    },
+    {
+      "module": "rep_ugc_exam_start",
+      "paths": [
+        "/api/rep/ugc/exam/start"
+      ]
+    },
+    {
+      "module": "rep_ugc_exam_submit",
+      "paths": [
+        "/api/rep/ugc/exam/submit"
+      ]
+    },
+    {
+      "module": "rep_ugc_user_collect-vip",
+      "paths": [
+        "/api/rep/ugc/user/collect-vip"
+      ]
+    },
+    {
+      "module": "rep_ugc_user_get",
+      "paths": [
+        "/api/rep/ugc/user/get"
+      ]
+    },
+    {
+      "module": "rep_ugc_user_sign",
+      "paths": [
+        "/api/rep/ugc/user/sign"
+      ]
+    },
+    {
+      "module": "rep_ugc_user_vip",
+      "paths": [
+        "/api/rep/ugc/user/vip"
+      ]
+    },
+    {
+      "module": "resource_like",
+      "paths": [
+        "/api/resource/${query.t}"
+      ]
+    },
+    {
+      "module": "sati_resource_list",
+      "paths": [
+        "/api/voice/sati/resource/list"
+      ]
+    },
+    {
+      "module": "sati_resource_list_more",
+      "paths": [
+        "/api/voice/sati/resource/list/more/v1"
+      ]
+    },
+    {
+      "module": "sati_resource_sub",
+      "paths": [
+        "/api/voice/sati/resource/sub"
+      ]
+    },
+    {
+      "module": "sati_resource_sub_list",
+      "paths": [
+        "/api/voice/sati/resource/sub/list"
+      ]
+    },
+    {
+      "module": "sati_tag_list",
+      "paths": [
+        "/api/voice/sati/tag/list"
+      ]
+    },
+    {
+      "module": "sati_timescene_resources_get",
+      "paths": [
+        "/api/voice/sati/timescene/resources/get"
+      ]
+    },
+    {
+      "module": "scrobble",
+      "paths": [
+        "/api/feedback/weblog"
+      ]
+    },
+    {
+      "module": "scrobble_v1",
+      "paths": []
+    },
+    {
+      "module": "search",
+      "paths": [
+        "/api/search/get",
+        "/api/search/voice/get"
+      ]
+    },
+    {
+      "module": "search_default",
+      "paths": [
+        "/api/search/defaultkeyword/get"
+      ]
+    },
+    {
+      "module": "search_hot",
+      "paths": [
+        "/api/search/hot"
+      ]
+    },
+    {
+      "module": "search_hot_detail",
+      "paths": [
+        "/api/hotsearchlist/get"
+      ]
+    },
+    {
+      "module": "search_match",
+      "paths": [
+        "/api/search/match/new"
+      ]
+    },
+    {
+      "module": "search_multimatch",
+      "paths": [
+        "/api/search/suggest/multimatch"
+      ]
+    },
+    {
+      "module": "search_suggest",
+      "paths": [
+        "/api/search/suggest/"
+      ]
+    },
+    {
+      "module": "search_suggest_pc",
+      "paths": [
+        "/api/search/pc/suggest/keyword/get"
+      ]
+    },
+    {
+      "module": "send_album",
+      "paths": [
+        "/api/msg/private/send"
+      ]
+    },
+    {
+      "module": "send_playlist",
+      "paths": [
+        "/api/msg/private/send"
+      ]
+    },
+    {
+      "module": "send_song",
+      "paths": [
+        "/api/msg/private/send"
+      ]
+    },
+    {
+      "module": "send_text",
+      "paths": [
+        "/api/msg/private/send"
+      ]
+    },
+    {
+      "module": "setting",
+      "paths": [
+        "/api/user/setting"
+      ]
+    },
+    {
+      "module": "share_resource",
+      "paths": [
+        "/api/share/friends/resource"
+      ]
+    },
+    {
+      "module": "sheet_list",
+      "paths": [
+        "/api/music/sheet/list/v1"
+      ]
+    },
+    {
+      "module": "sheet_preview",
+      "paths": [
+        "/api/music/sheet/preview/info"
+      ]
+    },
+    {
+      "module": "sign_happy_info",
+      "paths": [
+        "/api/sign/happy/info"
+      ]
+    },
+    {
+      "module": "signin_progress",
+      "paths": [
+        "/api/act/modules/signin/v2/progress"
+      ]
+    },
+    {
+      "module": "simi_artist",
+      "paths": [
+        "/api/discovery/simiArtist"
+      ]
+    },
+    {
+      "module": "simi_mv",
+      "paths": [
+        "/api/discovery/simiMV"
+      ]
+    },
+    {
+      "module": "simi_playlist",
+      "paths": [
+        "/api/discovery/simiPlaylist"
+      ]
+    },
+    {
+      "module": "simi_song",
+      "paths": [
+        "/api/v1/discovery/simiSong"
+      ]
+    },
+    {
+      "module": "simi_user",
+      "paths": [
+        "/api/discovery/simiUser"
+      ]
+    },
+    {
+      "module": "song_chorus",
+      "paths": [
+        "/api/song/chorus"
+      ]
+    },
+    {
+      "module": "song_cloud_download",
+      "paths": [
+        "/api/cloud/dowonload"
+      ]
+    },
+    {
+      "module": "song_copyright_rcmd",
+      "paths": [
+        "/api/song/copyright/rcmd"
+      ]
+    },
+    {
+      "module": "song_creators",
+      "paths": [
+        "/api/song/creators"
+      ]
+    },
+    {
+      "module": "song_detail",
+      "paths": [
+        "/api/v3/song/detail"
+      ]
+    },
+    {
+      "module": "song_downlist",
+      "paths": [
+        "/api/member/song/downlist"
+      ]
+    },
+    {
+      "module": "song_download_url",
+      "paths": [
+        "/api/song/enhance/download/url"
+      ]
+    },
+    {
+      "module": "song_download_url_v1",
+      "paths": [
+        "/api/song/enhance/download/url/v1"
+      ]
+    },
+    {
+      "module": "song_dynamic_cover",
+      "paths": [
+        "/api/songplay/dynamic-cover"
+      ]
+    },
+    {
+      "module": "song_like",
+      "paths": [
+        "/api/song/like"
+      ]
+    },
+    {
+      "module": "song_like_check",
+      "paths": [
+        "/api/song/like/check"
+      ]
+    },
+    {
+      "module": "song_lyrics_mark",
+      "paths": [
+        "/api/song/play/lyrics/mark/song"
+      ]
+    },
+    {
+      "module": "song_lyrics_mark_add",
+      "paths": [
+        "/api/song/play/lyrics/mark/add"
+      ]
+    },
+    {
+      "module": "song_lyrics_mark_del",
+      "paths": [
+        "/api/song/play/lyrics/mark/del"
+      ]
+    },
+    {
+      "module": "song_lyrics_mark_user_page",
+      "paths": [
+        "/api/song/play/lyrics/mark/user/page"
+      ]
+    },
+    {
+      "module": "song_monthdownlist",
+      "paths": [
+        "/api/member/song/monthdownlist"
+      ]
+    },
+    {
+      "module": "song_music_detail",
+      "paths": [
+        "/api/song/music/detail/get"
+      ]
+    },
+    {
+      "module": "song_order_update",
+      "paths": [
+        "/api/playlist/manipulate/tracks"
+      ]
+    },
+    {
+      "module": "song_purchased",
+      "paths": [
+        "/api/single/mybought/song/list"
+      ]
+    },
+    {
+      "module": "song_red_count",
+      "paths": [
+        "/api/song/red/count"
+      ]
+    },
+    {
+      "module": "song_simi_get",
+      "paths": [
+        "/api/link/position/show/resource"
+      ]
+    },
+    {
+      "module": "song_singledownlist",
+      "paths": [
+        "/api/member/song/singledownlist"
+      ]
+    },
+    {
+      "module": "song_url",
+      "paths": [
+        "/api/song/enhance/player/url"
+      ]
+    },
+    {
+      "module": "song_url_match",
+      "paths": []
+    },
+    {
+      "module": "song_url_ncmget",
+      "paths": []
+    },
+    {
+      "module": "song_url_v1",
+      "paths": [
+        "/api/song/enhance/player/url/v1"
+      ]
+    },
+    {
+      "module": "song_url_v1_302",
+      "paths": [
+        "/api/song/enhance/download/url/v1",
+        "/api/song/enhance/player/url/v1"
+      ]
+    },
+    {
+      "module": "song_wiki_info",
+      "paths": [
+        "/api/link/page/parent/relation/construct/info"
+      ]
+    },
+    {
+      "module": "song_wiki_summary",
+      "paths": [
+        "/api/song/play/about/block/page"
+      ]
+    },
+    {
+      "module": "starpick_comments_summary",
+      "paths": [
+        "/api/homepage/block/page"
+      ]
+    },
+    {
+      "module": "style_album",
+      "paths": [
+        "/api/style-tag/home/album"
+      ]
+    },
+    {
+      "module": "style_artist",
+      "paths": [
+        "/api/style-tag/home/artist"
+      ]
+    },
+    {
+      "module": "style_detail",
+      "paths": [
+        "/api/style-tag/home/head"
+      ]
+    },
+    {
+      "module": "style_list",
+      "paths": [
+        "/api/tag/list/get"
+      ]
+    },
+    {
+      "module": "style_playlist",
+      "paths": [
+        "/api/style-tag/home/playlist"
+      ]
+    },
+    {
+      "module": "style_preference",
+      "paths": [
+        "/api/tag/my/preference/get"
+      ]
+    },
+    {
+      "module": "style_song",
+      "paths": [
+        "/api/style-tag/home/song"
+      ]
+    },
+    {
+      "module": "summary_annual",
+      "paths": [
+        "/api/activity/summary/annual/${query.year}/${key}"
+      ]
+    },
+    {
+      "module": "thinktank_audit_resource_detail",
+      "paths": [
+        "/api/thinktank/audit/resource/detail"
+      ]
+    },
+    {
+      "module": "thinktank_audit_resource_update",
+      "paths": [
+        "/api/thinktank/audit/resource/update"
+      ]
+    },
+    {
+      "module": "threshold_detail_get",
+      "paths": [
+        "/api/influencer/web/apply/threshold/detail/get"
+      ]
+    },
+    {
+      "module": "top_album",
+      "paths": [
+        "/api/discovery/new/albums/area"
+      ]
+    },
+    {
+      "module": "top_artists",
+      "paths": [
+        "/api/artist/top"
+      ]
+    },
+    {
+      "module": "top_list",
+      "paths": [
+        "/api/playlist/v4/detail"
+      ]
+    },
+    {
+      "module": "top_mv",
+      "paths": [
+        "/api/mv/toplist"
+      ]
+    },
+    {
+      "module": "top_playlist",
+      "paths": [
+        "/api/playlist/list"
+      ]
+    },
+    {
+      "module": "top_playlist_highquality",
+      "paths": [
+        "/api/playlist/highquality/list"
+      ]
+    },
+    {
+      "module": "top_song",
+      "paths": [
+        "/api/v1/discovery/new/songs"
+      ]
+    },
+    {
+      "module": "topic_detail",
+      "paths": [
+        "/api/act/detail"
+      ]
+    },
+    {
+      "module": "topic_detail_event_hot",
+      "paths": [
+        "/api/act/event/hot"
+      ]
+    },
+    {
+      "module": "topic_sublist",
+      "paths": [
+        "/api/topic/sublist"
+      ]
+    },
+    {
+      "module": "toplist",
+      "paths": [
+        "/api/toplist"
+      ]
+    },
+    {
+      "module": "toplist_artist",
+      "paths": [
+        "/api/toplist/artist"
+      ]
+    },
+    {
+      "module": "toplist_detail",
+      "paths": [
+        "/api/toplist/detail"
+      ]
+    },
+    {
+      "module": "toplist_detail_v2",
+      "paths": [
+        "/api/toplist/detail/v2"
+      ]
+    },
+    {
+      "module": "ugc_album_get",
+      "paths": [
+        "/api/rep/ugc/album/get"
+      ]
+    },
+    {
+      "module": "ugc_artist_get",
+      "paths": [
+        "/api/rep/ugc/artist/get"
+      ]
+    },
+    {
+      "module": "ugc_artist_search",
+      "paths": [
+        "/api/rep/ugc/artist/search"
+      ]
+    },
+    {
+      "module": "ugc_detail",
+      "paths": [
+        "/api/rep/ugc/detail"
+      ]
+    },
+    {
+      "module": "ugc_mv_get",
+      "paths": [
+        "/api/rep/ugc/mv/get"
+      ]
+    },
+    {
+      "module": "ugc_song_get",
+      "paths": [
+        "/api/rep/ugc/song/get"
+      ]
+    },
+    {
+      "module": "ugc_user_devote",
+      "paths": [
+        "/api/rep/ugc/user/devote"
+      ]
+    },
+    {
+      "module": "user_account",
+      "paths": [
+        "/api/nuser/account/get"
+      ]
+    },
+    {
+      "module": "user_audio",
+      "paths": [
+        "/api/djradio/get/byuser"
+      ]
+    },
+    {
+      "module": "user_binding",
+      "paths": [
+        "/api/v1/user/bindings/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_bindingcellphone",
+      "paths": [
+        "/api/user/bindingCellphone"
+      ]
+    },
+    {
+      "module": "user_cloud",
+      "paths": [
+        "/api/v1/cloud/get"
+      ]
+    },
+    {
+      "module": "user_cloud_del",
+      "paths": [
+        "/api/cloud/del"
+      ]
+    },
+    {
+      "module": "user_cloud_detail",
+      "paths": [
+        "/api/v1/cloud/get/byids"
+      ]
+    },
+    {
+      "module": "user_comment_history",
+      "paths": [
+        "/api/comment/user/comment/history"
+      ]
+    },
+    {
+      "module": "user_detail",
+      "paths": [
+        "/api/v1/user/detail/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_detail_new",
+      "paths": [
+        "/api/w/v1/user/detail/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_dj",
+      "paths": [
+        "/api/dj/program/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_event",
+      "paths": [
+        "/api/event/get/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_event_all",
+      "paths": []
+    },
+    {
+      "module": "user_follow_mixed",
+      "paths": [
+        "/api/user/follow/users/mixed/get/v2"
+      ]
+    },
+    {
+      "module": "user_followeds",
+      "paths": [
+        "/api/user/getfolloweds/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_follows",
+      "paths": [
+        "/api/user/getfollows/${query.uid}"
+      ]
+    },
+    {
+      "module": "user_level",
+      "paths": [
+        "/api/user/level"
+      ]
+    },
+    {
+      "module": "user_medal",
+      "paths": [
+        "/api/medal/user/page"
+      ]
+    },
+    {
+      "module": "user_mutualfollow_get",
+      "paths": [
+        "/api/user/mutualfollow/get"
+      ]
+    },
+    {
+      "module": "user_playlist",
+      "paths": [
+        "/api/user/playlist"
+      ]
+    },
+    {
+      "module": "user_playlist_collect",
+      "paths": [
+        "/api/user/playlist/collect"
+      ]
+    },
+    {
+      "module": "user_playlist_create",
+      "paths": [
+        "/api/user/playlist/create"
+      ]
+    },
+    {
+      "module": "user_record",
+      "paths": [
+        "/api/v1/play/record"
+      ]
+    },
+    {
+      "module": "user_replacephone",
+      "paths": [
+        "/api/user/replaceCellphone"
+      ]
+    },
+    {
+      "module": "user_social_status",
+      "paths": [
+        "/api/social/user/status"
+      ]
+    },
+    {
+      "module": "user_social_status_edit",
+      "paths": [
+        "/api/social/user/status/edit"
+      ]
+    },
+    {
+      "module": "user_social_status_rcmd",
+      "paths": [
+        "/api/social/user/status/rcmd"
+      ]
+    },
+    {
+      "module": "user_social_status_support",
+      "paths": [
+        "/api/social/user/status/support"
+      ]
+    },
+    {
+      "module": "user_subcount",
+      "paths": [
+        "/api/subcount"
+      ]
+    },
+    {
+      "module": "user_update",
+      "paths": [
+        "/api/user/profile/update"
+      ]
+    },
+    {
+      "module": "verify_getQr",
+      "paths": [
+        "/api/frontrisk/verify/getqrcode"
+      ]
+    },
+    {
+      "module": "verify_qrcodestatus",
+      "paths": [
+        "/api/frontrisk/verify/qrcodestatus"
+      ]
+    },
+    {
+      "module": "video_category_list",
+      "paths": [
+        "/api/cloudvideo/category/list"
+      ]
+    },
+    {
+      "module": "video_detail",
+      "paths": [
+        "/api/cloudvideo/v1/video/detail"
+      ]
+    },
+    {
+      "module": "video_detail_info",
+      "paths": [
+        "/api/comment/commentthread/info"
+      ]
+    },
+    {
+      "module": "video_group",
+      "paths": [
+        "/api/videotimeline/videogroup/otherclient/get"
+      ]
+    },
+    {
+      "module": "video_group_list",
+      "paths": [
+        "/api/cloudvideo/group/list"
+      ]
+    },
+    {
+      "module": "video_sub",
+      "paths": [
+        "/api/cloudvideo/video/${query.t}"
+      ]
+    },
+    {
+      "module": "video_timeline_all",
+      "paths": [
+        "/api/videotimeline/otherclient/get"
+      ]
+    },
+    {
+      "module": "video_timeline_recommend",
+      "paths": [
+        "/api/videotimeline/get"
+      ]
+    },
+    {
+      "module": "video_url",
+      "paths": [
+        "/api/cloudvideo/playurl"
+      ]
+    },
+    {
+      "module": "vip_growthpoint",
+      "paths": [
+        "/api/vipnewcenter/app/level/growhpoint/basic"
+      ]
+    },
+    {
+      "module": "vip_growthpoint_details",
+      "paths": [
+        "/api/vipnewcenter/app/level/growth/details"
+      ]
+    },
+    {
+      "module": "vip_growthpoint_get",
+      "paths": [
+        "/api/vipnewcenter/app/level/task/reward/get"
+      ]
+    },
+    {
+      "module": "vip_growthpoint_getall",
+      "paths": [
+        "/api/vipnewcenter/app/level/task/reward/getall"
+      ]
+    },
+    {
+      "module": "vip_info",
+      "paths": [
+        "/api/music-vip-membership/front/vip/info"
+      ]
+    },
+    {
+      "module": "vip_info_v2",
+      "paths": [
+        "/api/music-vip-membership/client/vip/info"
+      ]
+    },
+    {
+      "module": "vip_sign",
+      "paths": [
+        "/api/vip-center-bff/task/sign",
+        "/api/vipnewcenter/app/level/user/checkin/history/detail"
+      ]
+    },
+    {
+      "module": "vip_sign_detail",
+      "paths": [
+        "/api/vipnewcenter/app/level/user/checkin/history/detail"
+      ]
+    },
+    {
+      "module": "vip_sign_history",
+      "paths": [
+        "/api/vipnewcenter/app/minidesk/music/sign/pc"
+      ]
+    },
+    {
+      "module": "vip_sign_info",
+      "paths": [
+        "/api/vipnewcenter/app/user/sign/info"
+      ]
+    },
+    {
+      "module": "vip_tasks",
+      "paths": [
+        "/api/vipnewcenter/app/level/task/list"
+      ]
+    },
+    {
+      "module": "vip_tasks_v1",
+      "paths": [
+        "/api/middle/vip/mission/user/progress/list"
+      ]
+    },
+    {
+      "module": "vip_timemachine",
+      "paths": [
+        "/api/vipmusic/newrecord/weekflow"
+      ]
+    },
+    {
+      "module": "voice_delete",
+      "paths": [
+        "/api/content/voice/delete"
+      ]
+    },
+    {
+      "module": "voice_detail",
+      "paths": [
+        "/api/voice/workbench/voice/detail"
+      ]
+    },
+    {
+      "module": "voice_lyric",
+      "paths": [
+        "/api/voice/lyric/get"
+      ]
+    },
+    {
+      "module": "voice_upload",
+      "paths": [
+        "/api/nos/token/alloc",
+        "/api/voice/workbench/voice/batch/upload/preCheck",
+        "/api/voice/workbench/voice/batch/upload/v2"
+      ]
+    },
+    {
+      "module": "voicelist_detail",
+      "paths": [
+        "/api/voice/workbench/voicelist/detail"
+      ]
+    },
+    {
+      "module": "voicelist_list",
+      "paths": [
+        "/api/voice/workbench/voices/by/voicelist"
+      ]
+    },
+    {
+      "module": "voicelist_list_search",
+      "paths": [
+        "/api/voice/workbench/voice/list"
+      ]
+    },
+    {
+      "module": "voicelist_my_created",
+      "paths": [
+        "/api/social/my/created/voicelist/v1"
+      ]
+    },
+    {
+      "module": "voicelist_search",
+      "paths": [
+        "/api/search/voicelist/get"
+      ]
+    },
+    {
+      "module": "voicelist_trans",
+      "paths": [
+        "/api/voice/workbench/radio/program/trans"
+      ]
+    },
+    {
+      "module": "weblog",
+      "paths": [
+        "/api/feedback/weblog"
+      ]
+    },
+    {
+      "module": "yunbei",
+      "paths": [
+        "/api/point/signed/get"
+      ]
+    },
+    {
+      "module": "yunbei_expense",
+      "paths": [
+        "/api/point/expense"
+      ]
+    },
+    {
+      "module": "yunbei_info",
+      "paths": [
+        "/api/v1/user/info"
+      ]
+    },
+    {
+      "module": "yunbei_rcmd_song",
+      "paths": [
+        "/api/yunbei/rcmd/song/submit"
+      ]
+    },
+    {
+      "module": "yunbei_rcmd_song_history",
+      "paths": [
+        "/api/yunbei/rcmd/song/history/list"
+      ]
+    },
+    {
+      "module": "yunbei_receipt",
+      "paths": [
+        "/api/point/receipt"
+      ]
+    },
+    {
+      "module": "yunbei_sign",
+      "paths": [
+        "/api/pointmall/user/sign"
+      ]
+    },
+    {
+      "module": "yunbei_task_finish",
+      "paths": [
+        "/api/usertool/task/point/receive"
+      ]
+    },
+    {
+      "module": "yunbei_task_finish_v1",
+      "paths": [
+        "/api/ad/power/yunbei/distribution/create"
+      ]
+    },
+    {
+      "module": "yunbei_task_list_v1",
+      "paths": [
+        "/api/ad/power/yunbei/distribution/list"
+      ]
+    },
+    {
+      "module": "yunbei_task_recommend_song",
+      "paths": [
+        "/api/ad/power/yunbei/distribution/recommend/song"
+      ]
+    },
+    {
+      "module": "yunbei_tasks",
+      "paths": [
+        "/api/usertool/task/list/all"
+      ]
+    },
+    {
+      "module": "yunbei_tasks_todo",
+      "paths": [
+        "/api/usertool/task/todo/query"
+      ]
+    },
+    {
+      "module": "yunbei_today",
+      "paths": [
+        "/api/point/today/get"
+      ]
+    }
+  ]
+}

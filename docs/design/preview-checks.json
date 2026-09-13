@@ -1,0 +1,92 @@
+{
+  "errors": [],
+  "checks": [
+    {
+      "name": "playlist creation escapes user text",
+      "passed": true
+    },
+    {
+      "name": "duplicate queue entries stay distinct",
+      "passed": true
+    },
+    {
+      "name": "queue reorders by entry identity",
+      "passed": true
+    },
+    {
+      "name": "next follows reordered queue",
+      "passed": true
+    },
+    {
+      "name": "panel restores focus to trigger",
+      "passed": true
+    },
+    {
+      "name": "search text is escaped",
+      "passed": true
+    },
+    {
+      "name": "search filters tracks",
+      "passed": true
+    },
+    {
+      "name": "theme switches",
+      "passed": true
+    },
+    {
+      "name": "no developer fields in login",
+      "passed": true
+    },
+    {
+      "name": "demo login completes",
+      "passed": true
+    }
+  ],
+  "viewports": [
+    {
+      "w": 1280,
+      "h": 800,
+      "font": 14,
+      "width": 1280,
+      "scroll": 1280,
+      "playerScroll": 1280,
+      "playerWidth": 1280,
+      "headerScroll": 1112,
+      "headerWidth": 1112
+    },
+    {
+      "w": 960,
+      "h": 720,
+      "font": 14,
+      "width": 960,
+      "scroll": 960,
+      "playerScroll": 960,
+      "playerWidth": 960,
+      "headerScroll": 792,
+      "headerWidth": 792
+    },
+    {
+      "w": 640,
+      "h": 480,
+      "font": 14,
+      "width": 640,
+      "scroll": 640,
+      "playerScroll": 640,
+      "playerWidth": 640,
+      "headerScroll": 584,
+      "headerWidth": 584
+    },
+    {
+      "w": 640,
+      "h": 480,
+      "font": 24,
+      "width": 640,
+      "scroll": 640,
+      "playerScroll": 640,
+      "playerWidth": 640,
+      "headerScroll": 584,
+      "headerWidth": 584
+    }
+  ],
+  "realPlaybackTested": false
+}

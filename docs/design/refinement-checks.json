@@ -1,0 +1,56 @@
+{
+  "errors": [
+    "Error: draft restored per comment target"
+  ],
+  "checks": [
+    {
+      "name": "Back restores search query and category",
+      "passed": true
+    },
+    {
+      "name": "saved video has Library destination",
+      "passed": true
+    },
+    {
+      "name": "purchases include albums and long audio",
+      "passed": true
+    },
+    {
+      "name": "owned playlist edit preloads metadata",
+      "passed": true
+    },
+    {
+      "name": "owned playlist edit updates detail",
+      "passed": true
+    },
+    {
+      "name": "selection exposes bulk actions",
+      "passed": true
+    },
+    {
+      "name": "play and like preserve composer",
+      "passed": true
+    },
+    {
+      "name": "FM mode is visible",
+      "passed": true
+    },
+    {
+      "name": "FM disables manual shuffle",
+      "passed": true
+    },
+    {
+      "name": "FM restores paused manual session",
+      "passed": true
+    },
+    {
+      "name": "track menu comments target selected song",
+      "passed": true
+    },
+    {
+      "name": "draft restored per comment target",
+      "passed": false
+    }
+  ],
+  "nativeIntegrationTested": false
+}
