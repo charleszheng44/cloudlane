@@ -20,11 +20,14 @@ QVariantMap MprisPlayer::metadata() const {
   return {{"mpris:trackid",
            QVariant::fromValue(QDBusObjectPath(
                "/io/github/charleszheng44/Yunjian/track/" + entry))},
-          {"mpris:length", qlonglong(m.value("duration").toLongLong() * 1000)},
-          {"xesam:title", m.value("name")},
+          {"mpris:length",
+           owner->hasMedia()
+               ? qRound64(owner->duration() * 1000000)
+               : qlonglong(m.value("duration").toLongLong() * 1000)},
+          {"xesam:title", m.value("name").toString()},
           {"xesam:artist", QStringList{m.value("artist").toString()}},
-          {"xesam:album", m.value("album")},
-          {"mpris:artUrl", m.value("cover")}};
+          {"xesam:album", m.value("album").toString()},
+          {"mpris:artUrl", m.value("cover").toString()}};
 }
 void MprisPlayer::Seek(qlonglong offset) {
   if (!canSeek())

@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QPointer>
 #include <functional>
+class Storage;
 class CookieJar : public QNetworkCookieJar {
 public:
   using QNetworkCookieJar::QNetworkCookieJar;
@@ -15,10 +16,11 @@ public:
 class Session : public QObject {
   Q_OBJECT
 public:
-  explicit Session(QObject *parent = nullptr);
+  explicit Session(QObject *parent = nullptr, Storage *storage = nullptr);
 public slots:
   void initialize();
-  void submit(int id, QString path, QJsonObject data, QString mode = "weapi");
+  void submit(int id, QString path, QJsonObject data, QString mode = "weapi",
+              bool cacheRead = false);
   void reset(bool clearSecret = true);
   void save(QString account);
 signals:
@@ -26,6 +28,9 @@ signals:
   void persistenceStatus(QString message);
 
 private:
+  void complete(int id, QJsonObject data, QString error);
+  Storage *storage = nullptr;
+  QHash<int, QString> cacheKeys;
   void bootstrap(std::function<void(QString)> completion);
   void send(int id, const QString &path, QJsonObject data, const QString &mode);
   void

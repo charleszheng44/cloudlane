@@ -11,8 +11,7 @@
 // here.
 class VideoRenderer final : public QQuickFramebufferObject::Renderer {
 public:
-  explicit VideoRenderer(const VideoItem *item)
-      : target(const_cast<VideoItem *>(item)) {
+  explicit VideoRenderer(const VideoItem *item) {
     auto backend = item->backend();
     if (!backend || !backend->playerHandle())
       return;
@@ -42,13 +41,15 @@ public:
     mpv_render_context_set_update_callback(
         context,
         [](void *data) {
-          auto self = static_cast<VideoRenderer *>(data);
-          // The item outlives its renderer. A queued call is removed if Qt
-          // destroys it.
-          QMetaObject::invokeMethod(self->target, "update",
-                                    Qt::QueuedConnection);
+          auto backend = static_cast<Backend *>(data);
+          // Backend outlives the QML engine and its render resources. The
+          // item's connection is removed automatically when Qt destroys the
+          // item.
+          QMetaObject::invokeMethod(
+              backend, [backend] { emit backend->videoUpdate(); },
+              Qt::QueuedConnection);
         },
-        this);
+        backend);
   }
   ~VideoRenderer() override {
     if (context) {
@@ -83,13 +84,16 @@ public:
 
 private:
   mpv_render_context *context = nullptr;
-  VideoItem *target;
 };
 VideoItem::VideoItem(QQuickItem *parent) : QQuickFramebufferObject(parent) {}
 void VideoItem::setBackend(Backend *value) {
   if (owner == value)
     return;
+  if (owner)
+    disconnect(owner, &Backend::videoUpdate, this, &QQuickItem::update);
   owner = value;
+  if (owner)
+    connect(owner, &Backend::videoUpdate, this, &QQuickItem::update);
   emit backendChanged();
   update();
 }

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=云间
+Name[en]=Yunjian
+GenericName=NetEase Cloud Music
+Comment=Native music player for Omarchy
+Exec=yunjian %U
+Icon=io.github.charleszheng44.Yunjian
+Terminal=false
+Categories=AudioVideo;Audio;Player;Qt;
+Keywords=music;netease;网易云;云间;
+StartupNotify=true
+StartupWMClass=yunjian
+MimeType=audio/mpeg;audio/flac;audio/ogg;audio/x-wav;video/mp4;

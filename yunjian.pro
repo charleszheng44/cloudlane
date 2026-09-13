@@ -7,3 +7,6 @@ SOURCES += src/main.cpp src/crypto.cpp src/session.cpp src/backend.cpp src/video
 HEADERS += src/crypto.h src/session.h src/backend.h src/videoitem.h src/mpris.h
 RESOURCES += resources.qrc
 QMAKE_CXXFLAGS += -Wall -Wextra
+
+SOURCES += src/storage.cpp
+HEADERS += src/storage.h

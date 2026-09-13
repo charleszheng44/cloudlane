@@ -1,11 +1,14 @@
 #include "session.h"
 #include "crypto.h"
+#include "storage.h"
+#include <QCryptographicHash>
 #include <QDateTime>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QNetworkCookie>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSet>
 #include <QSettings>
 #include <QTimer>
 #include <QUuid>
@@ -89,7 +92,7 @@ QByteArray CookieJar::value(const QByteArray &name) const {
       return cookie.value();
   return {};
 }
-Session::Session(QObject *p) : QObject(p) {}
+Session::Session(QObject *p, Storage *store) : QObject(p), storage(store) {}
 void Session::initialize() {
   QSettings settings;
   device = settings.value("deviceId").toByteArray();
@@ -99,6 +102,8 @@ void Session::initialize() {
   }
   reset(false);
   accountId = settings.value("accountId").toString();
+  if (storage)
+    storage->account(accountId);
   if (!accountId.isEmpty()) {
     SecretDeadline deadline;
     GError *error = nullptr;
@@ -117,6 +122,7 @@ void Session::initialize() {
 }
 void Session::reset(bool clearSecret) {
   ++generation;
+  cacheKeys.clear();
   auto retired = network;
   network = new QNetworkAccessManager(this);
   jar = new CookieJar(network);
@@ -144,10 +150,19 @@ void Session::reset(bool clearSecret) {
       g_error_free(error);
     QSettings().remove("accountId");
     accountId.clear();
+    if (storage)
+      storage->account({});
   }
 }
 void Session::save(QString account) {
+  if (account != accountId) {
+    const auto freshCookies = jar->serialize();
+    reset(false);
+    jar->restore(freshCookies);
+  }
   accountId = account;
+  if (storage)
+    storage->account(accountId);
   QSettings().setValue("accountId", account);
   SecretDeadline deadline;
   GError *error = nullptr;
@@ -252,22 +267,54 @@ void Session::bootstrap(std::function<void(QString)> done) {
            cb(error);
        });
 }
-void Session::submit(int id, QString path, QJsonObject data, QString mode) {
+void Session::submit(int id, QString path, QJsonObject data, QString mode,
+                     bool cacheRead) {
+  static const QSet<QString> readable{"/api/personalized/playlist",
+                                      "/api/playlist/list",
+                                      "/api/toplist",
+                                      "/api/v1/discovery/new/songs",
+                                      "/api/album/new",
+                                      "/api/djradio/recommend/v1",
+                                      "/api/mv/all",
+                                      "/api/user/playlist",
+                                      "/api/album/sublist",
+                                      "/api/artist/sublist",
+                                      "/api/djradio/get/subed",
+                                      "/api/cloudvideo/allvideo/sublist",
+                                      "/api/play-record/song/list",
+                                      "/api/digitalAlbum/purchased",
+                                      "/api/v1/cloud/get",
+                                      "/api/cloudsearch/pc",
+                                      "/api/v1/artist/songs",
+                                      "/api/dj/program/byradio",
+                                      "/api/v3/discovery/recommend/songs",
+                                      "/api/v1/event/get",
+                                      "/api/msg/notices",
+                                      "/api/msg/private/users",
+                                      "/api/msg/private/history"};
+  if (cacheRead && storage && readable.contains(path)) {
+    auto key = accountId.toUtf8() + "/" + mode.toUtf8() + "/" + path.toUtf8() +
+               "/" + QJsonDocument(data).toJson(QJsonDocument::Compact);
+    cacheKeys.insert(
+        id,
+        QString::fromLatin1(
+            QCryptographicHash::hash(key, QCryptographicHash::Sha256).toHex()));
+  }
   if (!network)
     initialize();
   if (!path.startsWith("/api/") || path.contains("..") || path.contains('?')) {
-    emit finished(id, {}, "无效服务请求");
+    complete(id, {}, "无效服务请求");
     return;
   }
   if (mode == "xeapi") {
     const auto gen = generation;
     bootstrap([this, id, path, data, mode, gen](QString error) {
       if (gen != generation) {
-        emit finished(id, {}, "登录会话已更改");
+        complete(id, {}, "登录会话已更改");
         return;
       }
       if (!error.isEmpty())
-        emit finished(id, {}, error);
+        complete(id, {}, error);
       else
         send(id, path, data, mode);
     });
@@ -329,7 +376,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
           TransportCrypto::xeapi(path, data, keyState, sessionKey, sessionId);
       url = "https://interface3.music.163.com/xeapi/" + path.mid(5);
     } else {
-      emit finished(id, {}, "未支持的服务协议");
+      complete(id, {}, "未支持的服务协议");
       return;
     }
     QByteArray cookieHeader;
@@ -345,7 +392,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
          [this, id, gen, mode](QByteArray body, QNetworkReply *reply,
                                QString error) {
            if (gen != generation) {
-             emit finished(id, {}, "登录会话已更改");
+             complete(id, {}, "登录会话已更改");
              return;
            }
            QJsonObject root;
@@ -370,9 +417,26 @@ void Session::send(int id, const QString &path, QJsonObject data,
            } catch (const std::exception &e) {
              error = QString::fromUtf8(e.what());
            }
-           emit finished(id, root, error);
+           complete(id, root, error);
          });
   } catch (const std::exception &e) {
-    emit finished(id, {}, QString::fromUtf8(e.what()));
+    complete(id, {}, QString::fromUtf8(e.what()));
   }
+}
+
+void Session::complete(int id, QJsonObject data, QString error) {
+  const auto key = cacheKeys.take(id);
+  if (storage && !key.isEmpty()) {
+    if (error.isEmpty() && data.value("code").toInt() == 200)
+      storage->cache(key, data);
+    else if (!error.isEmpty() || data.value("code").toInt() >= 500 ||
+             data.value("code").toInt() == 429) {
+      auto saved = storage->cached(key);
+      if (!saved.isEmpty()) {
+        data = saved;
+        error.clear();
+      }
+    }
+  }
+  emit finished(id, data, error);
 }

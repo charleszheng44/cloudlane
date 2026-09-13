@@ -9,11 +9,13 @@ A native NetEase Cloud Music desktop app for Omarchy, designed around normal con
 - [Five independent reviews and resolutions](docs/design/REVIEWS.md)
 - [Interactive preview](docs/design/preview.html) — open locally in a browser; fictional data, no service connection.
 
-![Home design](docs/design/preview-home.png)
+![Native app — live anonymous search](docs/screenshots/native-search.png)
+
+The screenshot above is the native app. The HTML design preview remains separate.
 
 The app uses C++20, Qt6/QML, a native consumer-service adapter, system libmpv/PipeWire, SQLite and Secret Service. Appearance follows the active Omarchy palette, system monospace font and compositor geometry.
 
-Full-release claims are gated on the required feature ledger, including authenticated playback, native video, cloud/offline behavior, social functions and the named protocol investigations.
+Full-release claims are gated on the feature ledger. Authenticated playback, cloud uploads, advanced social functions, Together, audiobooks and protected offline behavior still require implementation or acceptance work.
 
 ## Build and run on Omarchy / Arch
 
@@ -25,6 +27,14 @@ qmake6 -o build/Makefile yunjian.pro
 make -C build -j4
 ./build/yunjian
 ```
+
+Install the app and launcher entry without root access:
+
+```sh
+scripts/install-local.sh
+```
+
+Open **云间** from the launcher, or run `yunjian`.
 
 Launch with `--login` to show the NetEase consumer QR login. Normal mobile-account confirmation is required; developer registration is not. Session cookies are stored through Secret Service, never in repository files. The UI follows the current Omarchy theme and system monospace font.
 
@@ -42,5 +52,9 @@ make -C build/crypto-test -j4
 ./build/crypto-test/crypto-test tests/transport-vectors.json
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software ./build/yunjian --smoke-test
 ```
+
+For the complete automated checks, run `scripts/check.sh`. For the native graphics and live anonymous search checks, run `YUNJIAN_NATIVE_TESTS=1 YUNJIAN_LIVE_TESTS=1 scripts/check.sh` in a graphical D-Bus session. Development tests also need Node and FFmpeg.
+
+[Verification results and limits](docs/verification/2026-09-13.md) · [Current implementation and remaining work](docs/IMPLEMENTATION.md)
 
 Protocol reference attribution is in [THIRD_PARTY.md](THIRD_PARTY.md). Native video uses [Qt's OpenGL framebuffer integration](https://doc.qt.io/qt-6/qquickframebufferobject.html), and desktop playback follows [MPRIS](https://specifications.freedesktop.org/mpris/latest/Player_Interface.html).

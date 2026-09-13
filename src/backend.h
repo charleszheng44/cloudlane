@@ -1,5 +1,6 @@
 #pragma once
 #include "session.h"
+#include "storage.h"
 #include <QFileSystemWatcher>
 #include <QThread>
 #include <QVariantMap>
@@ -10,9 +11,11 @@ class Backend : public QObject {
   Q_PROPERTY(int fontSize READ fontSize NOTIFY themeChanged)
   Q_PROPERTY(bool playing READ playing NOTIFY playerChanged)
   Q_PROPERTY(double position READ position NOTIFY playerChanged)
+  Q_PROPERTY(double seekMinimum READ seekMinimum NOTIFY playerChanged)
   Q_PROPERTY(double duration READ duration NOTIFY playerChanged)
   Q_PROPERTY(bool loaded READ hasMedia NOTIFY playerChanged)
   Q_PROPERTY(QVariantMap metadata READ metadata NOTIFY metadataChanged)
+  Q_PROPERTY(QVariantList downloads READ downloads NOTIFY downloadsChanged)
   Q_PROPERTY(double volume READ volume NOTIFY playerChanged)
 public:
   explicit Backend(QObject *parent = nullptr);
@@ -23,12 +26,16 @@ public:
   bool hasMedia() const { return loaded; }
   mpv_handle *playerHandle() const { return mpv; }
   QVariantMap metadata() const { return trackMetadata; }
+  QVariantList downloads() const { return downloadTasks; }
   double rate() const { return playbackRate; }
   double position() const { return time; }
-  double duration() const { return length; }
+  double duration() const {
+    return rangeEnd > 0 ? qMin(length, rangeEnd) : length;
+  }
+  double seekMinimum() const { return rangeStart; }
   double volume() const { return gain; }
   Q_INVOKABLE int request(QString path, QVariantMap args = {},
-                          QString mode = "weapi");
+                          QString mode = "weapi", bool cacheRead = false);
   Q_INVOKABLE void saveAccount(QString id);
   Q_INVOKABLE void logout();
   Q_INVOKABLE QString qrImage(QString text);
@@ -38,7 +45,12 @@ public:
   Q_INVOKABLE void setPaused(bool value);
   Q_INVOKABLE void setMetadata(QVariantMap value);
   Q_INVOKABLE QString newId() const;
+  Q_INVOKABLE QVariantMap parseLink(QString text) const;
   Q_INVOKABLE void scanLocal(QVariantList urls);
+  Q_INVOKABLE void storeLocal(QVariantList tracks);
+  Q_INVOKABLE void download(QVariantMap track, QVariantMap grant,
+                            QString retryId = {});
+  Q_INVOKABLE void pauseDownload(QString id);
   Q_INVOKABLE void stop();
   Q_INVOKABLE void seek(double seconds);
   Q_INVOKABLE void setVolume(double value);
@@ -51,24 +63,30 @@ signals:
   void response(int id, QVariantMap data, QString error);
   void message(QString text);
   void themeChanged();
+  void videoUpdate();
   void playerChanged();
   void playbackEnded();
   void mediaLoaded();
   void metadataChanged();
   void localReady(QVariantList tracks);
+  void localLoaded(QVariantList tracks);
+  void downloadsChanged();
   void desktopAction(QString action);
+  void openRequested(QString uri);
   void seeked(qint64 position);
 
 private:
   void readTheme();
   void drainPlayer();
   QThread networkThread;
+  Storage *storage;
   Session *session;
+  QVariantList downloadTasks;
   int nextId = 0;
   mpv_handle *mpv = nullptr;
-  bool paused = true, loaded = false;
+  bool paused = true, loaded = false, scanInProgress = false;
   QVariantMap trackMetadata;
-  double playbackRate = 1;
+  double playbackRate = 1, rangeStart = 0, rangeEnd = 0;
   double time = 0, length = 0, gain = 65;
   QVariantMap colors;
   int baseSize = 14;

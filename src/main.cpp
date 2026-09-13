@@ -15,6 +15,18 @@ int main(int argc, char **argv) {
   QCoreApplication::setOrganizationName("Yunjian");
   QCoreApplication::setApplicationName("yunjian");
   QCoreApplication::setApplicationVersion("0.1.0-dev");
+  QCommandLineParser parser;
+  parser.setApplicationDescription(
+      "云间 · Native NetEase Cloud Music for Omarchy");
+  parser.addHelpOption();
+  parser.addVersionOption();
+  parser.addOption({"login", "Show consumer QR login"});
+  parser.addOption({"isolated", "Do not register the desktop media service"});
+  parser.addOption({"smoke-test", "Launch briefly for a UI smoke check"});
+  parser.addPositionalArgument(
+      "urls", "Local media files or NetEase resource links", "[urls...]");
+  parser.process(app);
+  const auto urls = parser.positionalArguments();
   QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
   QQuickStyle::setStyle("Basic");
   const bool isolated = app.arguments().contains("--isolated") ||
@@ -25,6 +37,13 @@ int main(int argc, char **argv) {
     bus.call(QDBusMessage::createMethodCall("org.mpris.MediaPlayer2.yunjian",
                                             "/org/mpris/MediaPlayer2",
                                             "org.mpris.MediaPlayer2", "Raise"));
+    for (const auto &uri : urls) {
+      auto message = QDBusMessage::createMethodCall(
+          "org.mpris.MediaPlayer2.yunjian", "/org/mpris/MediaPlayer2",
+          "org.mpris.MediaPlayer2.Player", "OpenUri");
+      message << uri;
+      bus.call(message);
+    }
     return 0;
   }
   qmlRegisterType<VideoItem>("Yunjian", 1, 0, "VideoSurface");
@@ -56,6 +75,10 @@ int main(int argc, char **argv) {
           }
         }
       });
+  QTimer::singleShot(350, &app, [&backend, urls] {
+    for (const auto &uri : urls)
+      emit backend.openRequested(uri);
+  });
   if (app.arguments().contains("--login"))
     QTimer::singleShot(250, &app, [&engine] {
       if (!engine.rootObjects().isEmpty())

@@ -20,8 +20,11 @@ public:
   bool no() const { return false; }
   QString identity() const { return QStringLiteral("云间"); }
   QString desktopEntry() const { return "io.github.charleszheng44.Yunjian"; }
-  QStringList schemes() const { return {}; }
-  QStringList mimeTypes() const { return {}; }
+  QStringList schemes() const { return {"file", "https", "http"}; }
+  QStringList mimeTypes() const {
+    return {"audio/mpeg", "audio/flac", "audio/ogg", "audio/x-wav",
+            "video/mp4"};
+  }
 public slots:
   void Raise() { emit owner->desktopAction("raise"); }
   void Quit() { emit owner->desktopAction("quit"); }
@@ -98,7 +101,7 @@ public slots:
   }
   void Seek(qlonglong offset);
   void SetPosition(const QDBusObjectPath &trackId, qlonglong value);
-  void OpenUri(const QString &) {} // No advertised URI schemes in this preview.
+  void OpenUri(const QString &uri) { emit owner->openRequested(uri); }
 signals:
   void Seeked(qlonglong position);
 

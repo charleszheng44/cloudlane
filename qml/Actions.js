@@ -8,18 +8,19 @@ var accountEpoch = 0;
 var qrEpoch = 0;
 var qrBusy = false;
 var savedQueue = null;
+var savedVideoQueue = null;
 function init(window) {
     app=window;
     navigate("首页");
     account(false);
-    try { app.localTracks=JSON.parse(app.backend.state("localTracks")||"[]"); } catch(e) {}
+
 }
-function request(path, args, callback, mode) {
-    var epoch=accountEpoch, id=app.backend.request(path,args||{},mode||"weapi");
+function request(path, args, callback, mode, cacheRead) {
+    var epoch=accountEpoch, id=app.backend.request(path,args||{},mode||"weapi",!!cacheRead);
     pending[id]=function(d,e){if(epoch===accountEpoch)callback(d,e);};
     return id;
 }
-function response(id, data, error) {var callback=pending[id];delete pending[id];if(callback)callback(data,error);}
+function response(id, data, error) {var callback=pending[id];delete pending[id];if(callback)callback(JSON.parse(JSON.stringify(data)),error);}
 function failure(d,e) {return e || (d.code!==200 ? d.message||d.msg||("服务暂不可用（"+d.code+"）") : "");}
 function push() {
     history.push({page:app.page,nav:app.nav,category:app.category,items:app.items,kind:app.viewKind,
@@ -36,7 +37,7 @@ function back() {
 function begin(title,kind,remember) {
     if(remember)push();
     app.viewGeneration++;app.page=title;app.viewKind=kind;app.items=[];app.resource={};
-    app.loading="正在加载…";app.error="";app.more=false;app.offset=0;app.restoreScroll=0;pageSpec=null;
+    app.loading="正在加载…";app.error="";app.staleText="";app.more=false;app.offset=0;app.restoreScroll=0;pageSpec=null;
 }
 function needAccount() {if(app.profile.userId)return false;app.loading="";app.error="登录后查看你的音乐";return true;}
 function spec(path,args,mode,field,kind) {return {path:path,args:args||{},mode:mode||"weapi",field:field,kind:kind};}
@@ -47,6 +48,7 @@ function fetch(specification,append) {
     app.loading=append?"正在加载更多…":"正在加载…";
     request(specification.path,args,function(d,e){
         if(gen!==app.viewGeneration)return;app.loading="";app.error=failure(d,e);if(app.error)return;
+        app.staleText=d._stale?"离线缓存 · "+new Date(Number(d._cacheTimestamp)*1000).toLocaleString():"";
         var raw=typeof specification.field==="function"?specification.field(d):select(d,specification.field);
         if(!Array.isArray(raw)){app.error="服务返回的内容格式暂不支持";return;}
         var list=specification.kind==="raw"?raw:Models.resources(raw,specification.kind);
@@ -54,7 +56,7 @@ function fetch(specification,append) {
         var more=d.more; if(more===undefined && d.data)more=d.data.more;
         app.more=specification.paged!==false && (more!==undefined?!!more:!!args.limit&&raw.length===args.limit);
         if(!app.items.length)app.error="暂无内容";
-    },specification.mode);
+    },specification.mode,true);
 }
 function more(){if(app.more&&!app.loading&&pageSpec)fetch(pageSpec,true);}
 function refresh(){if(pageSpec){app.viewGeneration++;app.offset=0;fetch(pageSpec,false);}else navigate(app.nav,app.category);}
@@ -111,7 +113,7 @@ var searchTypes=[{name:"歌曲",type:1,field:"songs",kind:"song"},{name:"专辑"
     {name:"播客",type:1009,field:"djRadios",kind:"radio"},{name:"MV",type:1004,field:"mvs",kind:"mv"},
     {name:"用户",type:1002,field:"userprofiles",kind:"user"}];
 function search(text,index) {
-    if(!text.trim())return;var type=searchTypes[index||0];app.query=text;app.searchType=index||0;
+    if(!text.trim())return;if(/^https?:\/\//i.test(text.trim())){handleLink(text);return;}var type=searchTypes[index||0];app.query=text;app.searchType=index||0;
     begin("搜索 · "+text,type.kind==="song"?"songs":"cards",true);
     fetch(spec("/api/cloudsearch/pc",{s:text,type:type.type,limit:50,offset:0},"eapi","result."+type.field,type.kind));
 }
@@ -150,7 +152,13 @@ function conversation(item) {
 }
 function account(showError) {
     request("/api/w/nuser/account/get",{},function(d,e){
-        if(!e&&d.profile){app.profile=d.profile;app.backend.saveAccount(String(d.profile.userId));app.closeLogin();app.loginPolling=false;
+        if(!e&&d.profile){
+            if(app.profile.userId && String(app.profile.userId)!==String(d.profile.userId)) {
+                accountEpoch++;pending={};app.viewGeneration++;app.playbackGeneration++;app.backend.stop();
+                app.queue=[];app.queueIndex=-1;app.currentTrack={};app.backend.setMetadata({});app.comments=[];
+                app.lyrics=[];app.contextTrack={};app.panel="";history=[];savedQueue=null;app.fm=false;
+            }
+            app.profile=d.profile;app.backend.saveAccount(String(d.profile.userId));app.closeLogin();app.loginPolling=false;
             request("/api/song/like/get",{uid:String(d.profile.userId)},function(data,error){if(!error&&data.code===200)app.likedIds=(data.ids||[]).map(String);},"eapi");
             if(showError)navigate("我的音乐");
         } else if(showError)app.loginStatus=e||"账户同步失败，请刷新登录";
@@ -177,20 +185,21 @@ function pollLogin(){
 }
 function logout(){
     accountEpoch++;app.viewGeneration++;app.playbackGeneration++;cancelLogin();pending={};
-    app.backend.logout();app.profile={};app.queue=[];app.queueIndex=-1;app.currentTrack={};app.likedIds=[];
+    app.backend.logout();app.writeBusy=false;app.profile={};app.queue=[];app.queueIndex=-1;app.currentTrack={};app.likedIds=[];
     app.comments=[];app.contextTrack={};app.lyrics=[];app.panel="";savedQueue=null;app.fm=false;history=[];
     app.backend.setMetadata({});app.closeLogin();navigate("首页");
 }
 function updateMetadata() {
     var metadata=Object.assign({},app.currentTrack);
-    metadata.canNext=app.fm||app.queueIndex+1<app.queue.length||app.repeatMode===1;
-    metadata.canPrevious=app.queueIndex>0;app.backend.setMetadata(metadata);
+    metadata.canNext=!app.videoSession&&(app.fm||app.queueIndex+1<app.queue.length||app.repeatMode===1);
+    metadata.canPrevious=!app.videoSession&&app.queueIndex>0;app.backend.setMetadata(metadata);
 }
 function play(track,startPaused) {
+    app.videoSession=false;savedVideoQueue=null;
     var gen=++app.playbackGeneration;
     app.backend.stop();app.currentTrack=track;app.actualQuality="";app.playerStatus="正在获取播放地址…";app.videoVisible=false;
     app.backend.setSpeed(track.kind==="episode"?app.podcastSpeed:1);updateMetadata();loadLyrics(track);
-    if(track.kind==="local") {app.playerStatus="";app.backend.load(track.url,0,0,!!startPaused);return;}
+    if(track.kind==="local") {app.videoVisible=/\.(mp4|mkv|webm)$/i.test(track.url||"");app.playerStatus="";app.backend.load(track.url,0,0,!!startPaused);return;}
     request("/api/song/enhance/player/url/v1",{ids:JSON.stringify([track.id]),level:app.quality,encodeType:"flac"},function(d,e){
         if(gen!==app.playbackGeneration)return;
         var result=(d.data||[])[0], issue=failure(d,e);
@@ -213,7 +222,7 @@ function playAll(){
 }
 function queuePlay(index){if(index<0||index>=app.queue.length)return;app.queueIndex=index;play(app.queue[index],false);}
 function next(automatic,keepPaused){
-    if(app.fm){loadFm();return;}
+    if(app.fm){if(app.queueIndex+1<app.queue.length){app.queueIndex++;play(app.queue[app.queueIndex],!!keepPaused);}else loadFm();return;}
     if(automatic&&app.repeatMode===2&&app.queueIndex>=0){play(app.queue[app.queueIndex],false);return;}
     var i=app.queueIndex+1;
     if(i>=app.queue.length&&app.repeatMode===1)i=0;
@@ -290,6 +299,8 @@ function likeComment(comment){
     });
 }
 function playVideo(item){
+    if(!app.videoSession) savedVideoQueue={queue:app.queue,index:app.queueIndex,track:app.currentTrack,position:app.backend.position};
+    app.videoSession=true;
     var gen=++app.playbackGeneration;app.backend.stop();app.currentTrack=Object.assign({},item,{entryId:app.backend.newId()});
     app.playerStatus="获取视频地址…";app.lyrics=[];app.videoVisible=true;updateMetadata();
     var mv=item.kind==="mv"||item.videoType===0;
@@ -297,7 +308,7 @@ function playVideo(item){
         if(gen!==app.playbackGeneration)return;var result=mv?d.data:(d.urls||[])[0];
         app.playerStatus=failure(d,e)||(!result||!result.url?"服务未提供视频播放地址":"");
         if(!app.playerStatus)app.backend.load(result.url);
-    },mv?"weapi":"eapi");
+    },"weapi");
 }
 function collect(item,subscribe){
     if(!app.profile.userId){app.openLogin();return;}if(app.writeBusy)return;
@@ -340,8 +351,9 @@ function copyLink(item){var kind=item.kind==="episode"?"program":item.kind==="ra
     if(item.kind==="local")return;app.backend.copyText("https://music.163.com/#/"+kind+"?id="+(item.programId||item.id));app.error="链接已复制";
 }
 function localReady(tracks){
+    tracks=JSON.parse(JSON.stringify(tracks));
     var map={};app.localTracks.concat(tracks).forEach(function(t){map[t.id]=t;});
-    app.localTracks=Object.keys(map).map(function(id){return map[id];});app.backend.setState("localTracks",JSON.stringify(app.localTracks));
+    app.localTracks=Object.keys(map).map(function(id){return map[id];});app.backend.storeLocal(app.localTracks);
     navigate("我的音乐","本地音乐");
 }
 function loaded(){
@@ -358,4 +370,31 @@ function desktopAction(action){
     else if(action==="previous")previous(!app.backend.playing);
     else if(action==="play")toggle();
     else if(action==="stop"){app.playbackGeneration++;app.backend.stop();}
+}
+
+function download(track,retryId){
+    if(!app.profile.userId){app.openLogin();return;}
+    if(app.downloadPending)return;app.downloadPending=true;
+    request("/api/song/enhance/download/url/v1",{id:track.id,immerseType:"c51",level:app.quality},function(d,e){
+        app.downloadPending=false;var grant=Array.isArray(d.data)?d.data[0]:d.data;
+        app.error=failure(d,e)||(!grant||!grant.url?"服务未提供下载权限":"");
+        if(!app.error){app.backend.download(track,grant,retryId||"");navigate("我的音乐","下载");}
+    },"eapi");
+}
+function playDownload(task){
+    enqueue(Object.assign({},task,{id:task.fileUrl,url:task.fileUrl,kind:"local"}),true);
+}
+
+function handleLink(text){
+    var resource=app.backend.parseLink(text);
+    if(!resource.id){app.error="请输入有效的网易云音乐链接或本地媒体文件";return;}
+    if(resource.kind==="song") {
+        request("/api/v3/song/detail",{c:JSON.stringify([{id:resource.id}])},function(d,e){app.error=failure(d,e);if(!app.error&&(d.songs||[]).length)enqueue(Models.song(d.songs[0]),true);});
+    } else open(resource);
+}
+
+function leaveVideo(){
+    var saved=savedVideoQueue;savedVideoQueue=null;app.videoSession=false;app.videoVisible=false;app.playbackGeneration++;app.backend.stop();
+    if(saved){app.queue=saved.queue;app.queueIndex=saved.index;app.currentTrack=saved.track;if(saved.track.id){app.resumeAt=saved.position;play(saved.track,true);}}
+    updateMetadata();
 }
