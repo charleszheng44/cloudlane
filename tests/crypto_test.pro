@@ -1,0 +1,9 @@
+QT += core
+QT -= gui
+CONFIG += console c++20 link_pkgconfig
+TEMPLATE = app
+TARGET = crypto-test
+INCLUDEPATH += ../src
+PKGCONFIG += openssl zlib
+SOURCES += crypto_test.cpp ../src/crypto.cpp
+HEADERS += ../src/crypto.h
