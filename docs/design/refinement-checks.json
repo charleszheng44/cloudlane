@@ -1,7 +1,5 @@
 {
-  "errors": [
-    "Error: draft restored per comment target"
-  ],
+  "errors": [],
   "checks": [
     {
       "name": "Back restores search query and category",
@@ -49,8 +47,41 @@
     },
     {
       "name": "draft restored per comment target",
-      "passed": false
+      "passed": true
+    },
+    {
+      "name": "compact Library retains fourth card",
+      "passed": true
+    },
+    {
+      "name": "compact volume available",
+      "passed": true
+    },
+    {
+      "name": "covered content cannot receive focus",
+      "passed": true
+    },
+    {
+      "name": "reverse tab does not enter covered content",
+      "passed": true
+    },
+    {
+      "name": "compact track row under 50 px",
+      "passed": true
+    },
+    {
+      "name": "seek and horizontal fit 1280x800 font 24",
+      "passed": true
+    },
+    {
+      "name": "seek and horizontal fit 960x720 font 18",
+      "passed": true
+    },
+    {
+      "name": "seek and horizontal fit 640x480 font 24",
+      "passed": true
     }
   ],
-  "nativeIntegrationTested": false
+  "nativeIntegrationTested": false,
+  "rowHeight": 48.75
 }
