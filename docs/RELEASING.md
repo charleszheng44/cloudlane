@@ -8,6 +8,7 @@ The repository is being prepared for open source. It remains a private developme
 - Review tracked files and Git history for private account data, signed URLs, local filesystem paths and screenshots. Only the fixture-based `preview.png` belongs in the public README. Do not distribute the build directory.
 - Preserve the GPL-3.0-or-later license and all third-party notices. Distribute corresponding source for binary releases and document the system-library dependencies. The VCS PKGBUILD follows current repository HEAD and is not a reproducible release pin; release packaging must pin its source revision.
 - Record tested features and remaining gaps in `IMPLEMENTATION.md`. Do not call this full NetEase parity. Native x86_64 has been exercised locally; other architectures and a clean package-manager installation need their own acceptance.
+- Confirm a complete hosted CI run passes; the initial run could not allocate a runner and executed no build/test steps.
 - Review the exact release diff, choose a version, and synchronize native app/manifest/package versions. A marketplace manifest requires a three-part version even while the app is a development preview.
 - When ready, change GitHub visibility to public, enable private vulnerability reporting, confirm the README and image render, and record the exact commit for review. Do not publish account acceptance artifacts.
 
