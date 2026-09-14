@@ -51,6 +51,7 @@ function fetch(specification,append) {
         if(!Array.isArray(raw)){app.error="服务返回的内容格式暂不支持";return;}
         var list=specification.kind==="raw"?raw:Models.resources(raw,specification.kind);
         app.items=append?app.items.concat(list):list;app.offset=(append?app.offset:0)+raw.length;
+        if(specification.path==="/api/user/playlist"&&String(args.uid)===String(app.profile.userId))app.libraryPlaylists=app.items.slice();
         var more=d.more; if(more===undefined && d.data)more=d.data.more;
         app.more=specification.paged!==false && (more!==undefined?!!more:!!args.limit&&raw.length===args.limit);
         if(!app.items.length)app.error="暂无内容";
@@ -149,6 +150,12 @@ function conversation(item) {
     fetch(spec("/api/msg/private/history",{userId:String(person.userId),limit:50,time:0,total:"true"},"weapi","msgs","raw"));
 }
 function account(showError){if(showError)app.backend.retryLogin();else app.backend.restoreAccount();}
+function refreshSidebar(){
+    if(!app.profile.userId){app.libraryPlaylists=[];return;}
+    request("/api/user/playlist",{uid:String(app.profile.userId),limit:100,offset:0},function(d,e){
+        if(!failure(d,e)&&Array.isArray(d.playlist))app.libraryPlaylists=Models.resources(d.playlist,"playlist");
+    },"weapi",true);
+}
 function acceptAccount(profile,afterLogin){
     profile=JSON.parse(JSON.stringify(profile));
     if(app.profile.userId&&String(app.profile.userId)!==String(profile.userId)){
@@ -156,15 +163,15 @@ function acceptAccount(profile,afterLogin){
         app.queue=[];app.queueIndex=-1;app.currentTrack={};app.backend.setMetadata({});app.comments=[];
         app.lyrics=[];app.contextTrack={};app.panel="";history=[];savedQueue=null;savedVideoQueue=null;app.fm=false;app.videoSession=false;
     }
-    app.profile=profile;app.closeLogin();
+    app.libraryPlaylists=[];app.profile=profile;app.closeLogin();
     request("/api/song/like/get",{uid:String(profile.userId)},function(data,error){if(!error&&Number(data.code)===200)app.likedIds=(data.ids||[]).map(String);},"eapi");
-    if(afterLogin)navigate("我的音乐");
+    if(afterLogin)navigate("我的音乐");else refreshSidebar();
 }
 function login(){app.backend.startLogin();}
 function cancelLogin(){app.backend.cancelLogin();}
 function logout(){
     accountEpoch++;app.viewGeneration++;app.playbackGeneration++;cancelLogin();pending={};
-    app.backend.logout();app.writeBusy=false;app.profile={};app.queue=[];app.queueIndex=-1;app.currentTrack={};app.likedIds=[];
+    app.backend.logout();app.writeBusy=false;app.profile={};app.libraryPlaylists=[];app.queue=[];app.queueIndex=-1;app.currentTrack={};app.likedIds=[];
     app.comments=[];app.contextTrack={};app.lyrics=[];app.panel="";savedQueue=null;app.fm=false;history=[];
     app.backend.setMetadata({});app.closeLogin();navigate("首页");
 }
@@ -307,7 +314,7 @@ function createPlaylist(name,privateList){
 function renamePlaylist(item,name){
     if(!name.trim()||app.writeBusy)return;app.writeBusy=true;
     request("/api/playlist/update/name",{id:item.id,name:name.trim()},function(d,e){app.writeBusy=false;var issue=failure(d,e);
-        if(issue){app.editError=issue;return;}app.closePlaylistEditor();open(Object.assign({},item,{name:name.trim()}));
+        if(issue){app.editError=issue;return;}app.closePlaylistEditor();refreshSidebar();open(Object.assign({},item,{name:name.trim()}));
     },"eapi");
 }
 function deletePlaylist(item){

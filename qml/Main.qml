@@ -8,7 +8,7 @@ import "Models.js" as Models
 ApplicationWindow {
     id: window
     width:1100; height:760; minimumWidth:640; minimumHeight:480
-    visible:true; title:"云间"; color:Backend.theme.background
+    visible:true; title:"云间"; color:Backend.theme.dark_background
     font.family:"monospace"; font.pixelSize:Backend.fontSize
     palette.window:Backend.theme.background; palette.windowText:Backend.theme.foreground
     palette.base:Backend.theme.dark_background; palette.text:Backend.theme.foreground
@@ -19,6 +19,7 @@ ApplicationWindow {
     property string page:"首页"
     property string category:""
     property var profile:({})
+    property var libraryPlaylists:[]
     property var items:[]
     property var resource:({})
     property string viewKind:"cards"
@@ -83,7 +84,10 @@ ApplicationWindow {
     function formatTime(seconds){var n=Math.max(0,Math.floor(seconds||0));return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")}
     function showTrackMenu(track){menuTrack=track;trackMenu.popup()}
     function playlistEditorOpen(edit){editingPlaylist=edit;playlistName.text=edit?(resource.name||""):"";editError="";playlistEditor.open()}
-    onPanelChanged:{if(panel)contextDrawer.open();else contextDrawer.close()}
+    readonly property bool dockPanel: width >= 1280
+    function syncPanel(){if(panel && !dockPanel)contextDrawer.open();else contextDrawer.close()}
+    onPanelChanged:syncPanel()
+    onDockPanelChanged:Qt.callLater(syncPanel)
     Connections {
         target:Backend
         function onAccountReady(profile,afterLogin){Actions.acceptAccount(profile,afterLogin)}
@@ -101,43 +105,37 @@ ApplicationWindow {
     ColumnLayout {
         anchors.fill:parent; spacing:0
         RowLayout {
-            Layout.fillWidth:true; Layout.fillHeight:true; spacing:0
-            Rectangle {
-                Layout.preferredWidth:window.width<840?66:164; Layout.fillHeight:true; color:Backend.theme.dark_background
-                ColumnLayout {
-                    anchors.fill:parent; anchors.margins:12; spacing:6
-                    Label { text:"云间"; font.pixelSize:24; color:Backend.theme.accent; Layout.topMargin:14; Layout.bottomMargin:24 }
-                    Repeater {
-                        model:["首页","发现","我的音乐","动态"]
-                        ActionButton {
-                            required property string modelData
-                            text:window.width<840?modelData.slice(0,2):modelData
-                            selected:window.nav===modelData; quiet:true; Layout.fillWidth:true
-                            onClicked:Actions.navigate(modelData)
-                            ToolTip.visible:hovered&&window.width<840; ToolTip.text:modelData
-                        }
-                    }
-                    Item { Layout.fillHeight:true }
-                    Label { visible:window.width>=840; text:"音乐，留在此刻。"; font.pixelSize:11; opacity:.6; Layout.bottomMargin:8 }
-                    ActionButton { text:window.width<840?"设置":"偏好设置"; quiet:true; Layout.fillWidth:true; onClicked:settingsPopup.open() }
-                    Label { text:"PREVIEW"; font.pixelSize:9; opacity:.5; Layout.alignment:Qt.AlignHCenter; Layout.bottomMargin:8 }
-                }
+            Layout.fillWidth: true; Layout.preferredHeight: 60; Layout.leftMargin: 18; Layout.rightMargin: 18
+            spacing: 12
+            Label { text: "云间"; font.pixelSize: 22; font.weight: Font.DemiBold; color: Backend.theme.accent; Layout.preferredWidth: window.width < 840 ? 32 : 160 }
+            PlayerButton { symbol: "back"; label: "返回"; enabled: window.canBack; onClicked: Actions.back() }
+            PlayerButton { symbol: "home"; label: "首页"; selected: window.nav === "首页"; onClicked: Actions.navigate("首页") }
+            TextField {
+                id: searchBox; Layout.fillWidth: true; Layout.maximumWidth: 580; implicitHeight: 40
+                placeholderText: "搜索歌曲、专辑、歌手…"; selectByMouse: true; leftPadding: 40
+                onAccepted: Actions.search(text, window.searchType)
+                background: Rectangle { radius: 20; color: Backend.theme.background; border.width: searchBox.activeFocus ? 1 : 0; border.color: Backend.theme.accent }
+                PlayerIcon { x: 12; anchors.verticalCenter: parent.verticalCenter; width: 18; height: 18; name: "search"; opacity: .65 }
             }
-            ColumnLayout {
-                Layout.fillWidth:true; Layout.fillHeight:true; Layout.margins:window.width<840?16:24; spacing:14
-                RowLayout {
-                    Layout.fillWidth:true; spacing:8
-                    ActionButton { text:"‹"; Accessible.name:"返回"; enabled:window.canBack; quiet:true; onClicked:Actions.back() }
-                    TextField {
-                        id:searchBox; Layout.fillWidth:true; placeholderText:"搜索歌曲、专辑、歌手…"; selectByMouse:true
-                        onAccepted:Actions.search(text,window.searchType)
-                        background:Rectangle { color:Backend.theme.dark_background; border.color:searchBox.activeFocus?Backend.theme.accent:"#737c9d"; border.width:1 }
-                    }
-                    ActionButton { text:window.profile.nickname||"登录"; Layout.maximumWidth:150; quiet:true; onClicked:window.openLogin() }
-                }
+            Item { Layout.fillWidth: true; visible: window.width > 1100 }
+            ActionButton { text: window.profile.nickname || "登录"; Layout.maximumWidth: window.width < 840 ? 76 : 150; quiet: true; onClicked: window.openLogin() }
+        }
+        RowLayout {
+            Layout.fillWidth: true; Layout.fillHeight: true; Layout.leftMargin: 8; Layout.rightMargin: 8; spacing: 8
+            LibrarySidebar {
+                Layout.preferredWidth: window.width < 840 ? 66 : window.width < 1000 ? 190 : 232
+                Layout.fillHeight: true
+                app: window
+                onSettingsRequested: settingsPopup.open()
+            }
+            Rectangle {
+                Layout.fillWidth: true; Layout.fillHeight: true
+                color: Backend.theme.background; radius: 8
+                ColumnLayout {
+                    anchors.fill: parent; anchors.margins: window.width < 840 ? 16 : 24; spacing: 14
                 RowLayout {
                     Layout.fillWidth:true
-                    Label { text:window.page; font.pixelSize:24; Layout.fillWidth:true; elide:Text.ElideRight }
+                    Label { text:window.page==="首页"?"为你推荐":window.page; font.pixelSize:26; font.weight:Font.DemiBold; Layout.fillWidth:true; elide:Text.ElideRight }
                     ComboBox {
                         id:categoryBox; visible:window.categories.length>0 && window.page===window.nav
                         model:window.categories; currentIndex:Math.max(0,window.categories.indexOf(window.category))
@@ -150,7 +148,6 @@ ApplicationWindow {
                     visible:window.page==="首页"; Layout.fillWidth:true; spacing:8
                     ActionButton { text:"每日推荐"; onClicked:Actions.daily() }
                     ActionButton { text:window.fm?"返回队列":"私人 FM"; selected:window.fm; onClicked:Actions.fm() }
-                    Label { text:"为你推荐"; visible:window.width>950; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight; opacity:.7 }
                 }
                 RowLayout {
                     visible:window.page.indexOf("搜索 · ")===0; Layout.fillWidth:true
@@ -179,24 +176,29 @@ ApplicationWindow {
                 }
                 GridView {
                     id:cardGrid; visible:window.viewKind==="cards"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
-                    property int columns:Math.max(2,Math.floor(width/174))
-                    cellWidth:width/columns; cellHeight:cellWidth+76; model:window.items
+                    readonly property bool compact:window.height<620
+                    property int columns:compact?1:Math.max(2,Math.floor(width/190))
+                    cellWidth:width/columns; cellHeight:compact?76:Math.min(190,cellWidth-8)+76; model:window.items
                     ScrollBar.vertical:ScrollBar{}
                     delegate:ItemDelegate {
                         id:card
                         required property var modelData
-                        width:cardGrid.cellWidth-16; height:cardGrid.cellHeight-16; padding:0
-                        background:Rectangle { color:card.hovered?Backend.theme.selection:"transparent"; border.width:card.activeFocus?1:0; border.color:Backend.theme.accent }
-                        contentItem:ColumnLayout {
-                            spacing:8
+                        width:cardGrid.compact?cardGrid.cellWidth-8:Math.min(190,cardGrid.cellWidth-8); height:cardGrid.cellHeight-8; padding:8
+                        background:Rectangle { radius:6; color:card.hovered?Backend.theme.selection:"transparent"; border.width:card.activeFocus?1:0; border.color:Backend.theme.accent }
+                        contentItem:GridLayout {
+                            columns:cardGrid.compact?2:1; rowSpacing:8; columnSpacing:12
                             Rectangle {
-                                Layout.fillWidth:true; Layout.preferredHeight:card.width; color:Backend.theme.dark_background
+                                Layout.fillWidth:!cardGrid.compact; Layout.preferredWidth:cardGrid.compact?52:card.availableWidth
+                                Layout.preferredHeight:cardGrid.compact?52:card.availableWidth; color:Backend.theme.dark_background
                                 Label { text:"♪"; anchors.centerIn:parent; font.pixelSize:32; opacity:.35 }
-                                Image { anchors.fill:parent; source:card.modelData.cover; sourceSize.width:320; sourceSize.height:320; fillMode:Image.PreserveAspectCrop; asynchronous:true }
+                                Image { objectName:"browseCover"; anchors.fill:parent; source:card.modelData.cover; sourceSize.width:320; sourceSize.height:320; fillMode:Image.PreserveAspectCrop; asynchronous:true }
                             }
-                            Label { text:card.modelData.name; Layout.fillWidth:true; elide:Text.ElideRight }
-                            Label { text:card.modelData.artist||""; Layout.fillWidth:true; elide:Text.ElideRight; opacity:.65; font.pixelSize:Math.max(11,window.font.pixelSize-2) }
-                            Item { Layout.fillHeight:true }
+                            ColumnLayout {
+                                Layout.fillWidth:true; spacing:4
+                                Label { text:card.modelData.name; Layout.fillWidth:true; elide:Text.ElideRight; textFormat:Text.PlainText }
+                                Label { text:card.modelData.artist||""; visible:!!text; Layout.fillWidth:true; elide:Text.ElideRight; opacity:.65; font.pixelSize:Math.max(11,window.font.pixelSize-2); textFormat:Text.PlainText }
+                            }
+                            Item { visible:!cardGrid.compact; Layout.fillHeight:true }
                         }
                         onClicked:Actions.open(modelData)
                         Accessible.name:modelData.name
@@ -263,45 +265,25 @@ ApplicationWindow {
                     Label { anchors.centerIn:parent; visible:!downloadsList.count; text:"从歌曲菜单下载有权限的音乐"; opacity:.7 }
                 }
                 ActionButton { text:"加载更多"; visible:window.more; enabled:!window.loading; Layout.alignment:Qt.AlignHCenter; onClicked:Actions.more() }
+                }
+            }
+            ContextPanel {
+                visible: window.dockPanel && !!window.panel
+                Layout.preferredWidth: 288; Layout.fillHeight: true
+                app: window
+                radius: 8
             }
         }
-        Rectangle {
-            Layout.fillWidth:true; Layout.preferredHeight:Math.max(98,window.font.pixelSize*6.8); color:Backend.theme.dark_background
-            RowLayout {
-                anchors.fill:parent; anchors.margins:12; spacing:window.width<800?8:16
-                ColumnLayout {
-                    Layout.preferredWidth:Math.min(230,window.width*.23); spacing:6
-                    Label { text:window.currentTrack.name||"选择一首音乐"; Layout.fillWidth:true; elide:Text.ElideRight }
-                    Label { text:window.currentTrack.artist||""; Layout.fillWidth:true; elide:Text.ElideRight; opacity:.7; font.pixelSize:Math.max(11,window.font.pixelSize-2) }
-                    Label { text:window.playerStatus||window.actualQuality; visible:!!text; Layout.fillWidth:true; elide:Text.ElideRight; color:window.playerStatus?Backend.theme.accent:Backend.theme.foreground; font.pixelSize:11; ToolTip.text:text; ToolTip.visible:playerHover.hovered; HoverHandler{id:playerHover} }
-                }
-                ActionButton { visible:window.width>880; text:window.likedIds.indexOf(window.currentTrack.id)>=0?"♥":"♡"; Accessible.name:"喜欢当前歌曲"; quiet:true; enabled:window.currentTrack.kind==="song"&&!window.writeBusy; onClicked:Actions.like(window.currentTrack) }
-                ColumnLayout {
-                    Layout.fillWidth:true; spacing:4
-                    RowLayout {
-                        Layout.alignment:Qt.AlignHCenter; spacing:6
-                        ActionButton { text:"‹"; Accessible.name:"上一首"; quiet:true; enabled:window.queueIndex>0; onClicked:Actions.previous(false) }
-                        ActionButton { text:Backend.playing?"暂停":"播放"; enabled:!!window.currentTrack.id; onClicked:Actions.toggle() }
-                        ActionButton { text:"›"; Accessible.name:"下一首"; quiet:true; enabled:window.queue.length>0; onClicked:Actions.next(false,false) }
-                        ActionButton { visible:window.width>900; text:["顺序","循环","单曲"][window.repeatMode]; quiet:true; onClicked:{window.repeatMode=(window.repeatMode+1)%3;Actions.updateMetadata()} }
-                    }
-                    RowLayout {
-                        Layout.fillWidth:true; spacing:6
-                        Label { text:window.formatTime(Backend.position); font.pixelSize:11; opacity:.7 }
-                        Slider { Layout.fillWidth:true; Layout.minimumWidth:40; from:Backend.seekMinimum; to:Math.max(Backend.seekMinimum+1,Backend.duration); value:Backend.position; enabled:Backend.loaded; onMoved:Backend.seek(value); Accessible.name:"播放进度" }
-                        Label { text:window.formatTime(Backend.duration); font.pixelSize:11; opacity:.7 }
-                    }
-                }
-                ActionButton { text:"歌词"; quiet:true; visible:window.width>760; selected:window.panel==="歌词"; onClicked:window.panel=window.panel==="歌词"?"":"歌词" }
-                ActionButton { text:"队列"; quiet:true; selected:window.panel==="队列"; onClicked:window.panel=window.panel==="队列"?"":"队列" }
-                ActionButton { text:"···"; Accessible.name:"播放器选项"; quiet:true; onClicked:playerOptions.open() }
-            }
+        PlayerBar {
+            Layout.fillWidth: true
+            app: window
+            onOptionsRequested: playerOptions.open()
         }
     }
     Drawer {
         id:contextDrawer; edge:Qt.RightEdge; width:Math.min(400,window.width-32); height:window.height
         modal:true; focus:true; closePolicy:Popup.CloseOnEscape|Popup.CloseOnPressOutside
-        onClosed:window.panel=""
+        onClosed:if(!window.dockPanel)window.panel=""
         contentItem:ContextPanel { app:window }
     }
     Popup {
@@ -327,9 +309,9 @@ ApplicationWindow {
         contentItem:ColumnLayout {
             spacing:12
             Label { text:"播放选项"; font.pixelSize:20 }
-            RowLayout { Label { text:"音量" } Slider { Layout.fillWidth:true; from:0; to:100; value:Backend.volume; onMoved:Backend.setVolume(value); Accessible.name:"音量" } Label { text:Math.round(Backend.volume)+"%" } }
             ComboBox { model:["顺序播放","列表循环","单曲循环"]; currentIndex:window.repeatMode; Layout.fillWidth:true; onActivated:{window.repeatMode=currentIndex;Actions.updateMetadata()} }
             RowLayout {
+                ActionButton { text:"正在播放"; onClicked:{playerOptions.close();window.panel="正在播放"} }
                 ActionButton { text:"歌词"; onClicked:{playerOptions.close();window.panel="歌词"} }
                 ActionButton { text:"评论"; enabled:!!Models.commentThread(window.currentTrack); onClicked:{playerOptions.close();Actions.comments(window.currentTrack,false)} }
                 ActionButton { text:window.likedIds.indexOf(window.currentTrack.id)>=0?"已喜欢":"喜欢"; enabled:window.currentTrack.kind==="song"&&!window.writeBusy; onClicked:Actions.like(window.currentTrack) }

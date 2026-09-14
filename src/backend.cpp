@@ -169,6 +169,9 @@ void Backend::load(QString url, double previewEnd, double previewStart,
   const char *args[] = {"loadfile", path.constData(),    "replace",
                         "-1",       options.constData(), nullptr};
   loaded = false;
+  // A new unpaused file may keep mpv's existing pause value, so no property
+  // change is emitted. Do not retain the stopped file's cached paused state.
+  paused = startPaused;
   time = length = 0;
   mpv_command_async(mpv, 0, args);
   int pause = startPaused ? 1 : 0;

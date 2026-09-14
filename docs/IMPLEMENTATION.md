@@ -4,7 +4,8 @@ Development preview, 13 September 2026. A working C++/QML implementation is incl
 
 ## Implemented and locally verified
 
-- Qt6 Quick UI, live Omarchy palette/font-size integration, system monospace font, square controls, four-route navigation, responsive cards and virtualized track lists.
+- Qt6 Quick UI with Spotify-inspired desktop organization: global search, a library sidebar with account playlists, central browsing, and a Now Playing/lyrics/queue panel that docks on wide windows. Omarchy palette/font-size integration and system monospace font remain live.
+- Standard vector media controls: prominent play/pause, previous/next, shuffle/repeat, seek, visible volume slider and mute/restore. Compact windows retain the essential controls and use smaller browsing rows.
 - Native WEAPI/EAPI/XEAPI transport using Qt Network and OpenSSL, without a Node service or Electron runtime. Real anonymous search and QR-challenge retrieval pass.
 - Consumer QR approval recovered and persisted in Secret Service; saved-account restoration, playlist listing, daily recommendations and a full-track playback grant verified with an ordinary account. Native background login polling and retry paths have regression tests.
 - libmpv audio and embedded OpenGL video, play/pause/seek, service-grant quality/trial handling, duplicate-safe queue entries, move/remove, future-queue shuffle and repeat.

@@ -1,1 +1,1 @@
-<RCC><qresource prefix="/"><file>qml/Main.qml</file><file>qml/Models.js</file><file>qml/Actions.js</file><file>qml/ActionButton.qml</file><file>qml/ContextPanel.qml</file></qresource></RCC>
+<RCC><qresource prefix="/"><file>qml/Main.qml</file><file>qml/Models.js</file><file>qml/Actions.js</file><file>qml/ActionButton.qml</file><file>qml/ContextPanel.qml</file><file>qml/PlayerBar.qml</file><file>qml/PlayerButton.qml</file><file>qml/PlayerIcon.qml</file><file>qml/PlayerSlider.qml</file><file>qml/LibrarySidebar.qml</file></qresource></RCC>

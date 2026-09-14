@@ -36,6 +36,27 @@ Rectangle {
             onActivated:{app.commentSort=currentIndex===0?99:3;Actions.comments(app.contextTrack,false)}
         }
         Label { text:app.panelError; visible:app.panel==="评论"&&text.length>0; wrapMode:Text.Wrap; Layout.fillWidth:true; color:Backend.theme.red }
+        ColumnLayout {
+            visible: app.panel === "正在播放"
+            Layout.fillWidth: true; Layout.fillHeight: true
+            spacing: 16
+            Rectangle {
+                Layout.fillWidth: true; Layout.preferredHeight: width
+                color: Backend.theme.selection
+                PlayerIcon { anchors.centerIn: parent; width: 64; height: 64; name: "music"; opacity: .35 }
+                Image { anchors.fill: parent; source: panel.app.currentTrack.cover || ""; fillMode: Image.PreserveAspectCrop; asynchronous: true }
+            }
+            Label { text: app.currentTrack.name || "选择一首音乐"; font.pixelSize: 22; font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap; textFormat: Text.PlainText }
+            Label { text: app.currentTrack.artist || ""; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .65; textFormat: Text.PlainText }
+            Label { text: app.currentTrack.album || ""; visible: !!text; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .65; textFormat: Text.PlainText }
+            Label { text: app.playerStatus || app.actualQuality; visible: !!text; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .7 }
+            Item { Layout.fillHeight: true }
+            RowLayout {
+                ActionButton { text: "歌词"; onClicked: panel.app.panel = "歌词" }
+                ActionButton { text: "队列"; onClicked: panel.app.panel = "队列" }
+                ActionButton { text: "评论"; enabled: !!Models.commentThread(panel.app.currentTrack); onClicked: Actions.comments(panel.app.currentTrack, false) }
+            }
+        }
         ListView {
             id: queueList; visible:app.panel==="队列"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
             model:app.queue; spacing:4; ScrollBar.vertical:ScrollBar{}
