@@ -1,4 +1,5 @@
 #pragma once
+#include "loginflow.h"
 #include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkCookieJar>
@@ -23,13 +24,23 @@ public slots:
               bool cacheRead = false);
   void reset(bool clearSecret = true);
   void save(QString account);
+  void startLogin();
+  void cancelLogin();
+  void restoreAccount();
+  void retryLogin();
 signals:
   void finished(int id, QJsonObject data, QString error);
   void persistenceStatus(QString message);
+  void loginChanged(QString phase, QString message);
+  void loginChallenge(QString url);
+  void accountReady(QJsonObject profile, bool afterLogin);
 
 private:
   void complete(int id, QJsonObject data, QString error);
   Storage *storage = nullptr;
+  LoginFlow *login = nullptr;
+  int nextInternalId = 0;
+  QHash<int, LoginFlow::Callback> internalRequests;
   QHash<int, QString> cacheKeys;
   void bootstrap(std::function<void(QString)> completion);
   void send(int id, const QString &path, QJsonObject data, const QString &mode);

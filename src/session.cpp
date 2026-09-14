@@ -101,6 +101,22 @@ void Session::initialize() {
     settings.setValue("deviceId", device);
   }
   reset(false);
+  if (!login) {
+    login = new LoginFlow(
+        [this](QString path, QJsonObject args, QString mode,
+               LoginFlow::Callback done) {
+          const int id = --nextInternalId;
+          internalRequests.insert(id, std::move(done));
+          submit(id, path, args, mode);
+        },
+        [this](QJsonObject profile) {
+          save(profile.value("userId").toVariant().toString());
+        },
+        this);
+    connect(login, &LoginFlow::changed, this, &Session::loginChanged);
+    connect(login, &LoginFlow::challenge, this, &Session::loginChallenge);
+    connect(login, &LoginFlow::accountReady, this, &Session::accountReady);
+  }
   accountId = settings.value("accountId").toString();
   if (storage)
     storage->account(accountId);
@@ -121,6 +137,8 @@ void Session::initialize() {
   }
 }
 void Session::reset(bool clearSecret) {
+  if (clearSecret && login)
+    login->forgetAccount();
   ++generation;
   cacheKeys.clear();
   auto retired = network;
@@ -181,6 +199,10 @@ void Session::post(
     const QList<QPair<QByteArray, QByteArray>> &headers,
     std::function<void(QByteArray, QNetworkReply *, QString)> done) {
   QNetworkRequest request(url);
+  // Every request supplies its explicit, scoped Cookie header. In particular,
+  // QR authorization must not inherit cookies from anonymous browsing.
+  request.setAttribute(QNetworkRequest::CookieLoadControlAttribute,
+                       QNetworkRequest::Manual);
   request.setTransferTimeout(20000);
   request.setHeader(QNetworkRequest::ContentTypeHeader,
                     "application/x-www-form-urlencoded;charset=utf-8");
@@ -324,7 +346,8 @@ void Session::submit(int id, QString path, QJsonObject data, QString mode,
 void Session::send(int id, const QString &path, QJsonObject data,
                    const QString &mode) {
   try {
-    const auto csrf = jar->value("__csrf");
+    const bool qrRequest = path.startsWith("/api/login/qrcode/");
+    const auto csrf = qrRequest ? QByteArray() : jar->value("__csrf");
     QJsonObject cookie{
         {"os", "pc"},
         {"appver", "3.1.17.204416"},
@@ -335,7 +358,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
         {"_ntes_nuid", QString::fromLatin1(device)}};
     for (const auto &name : {QByteArray("MUSIC_U"), QByteArray("MUSIC_A"),
                              QByteArray("__csrf"), QByteArray("NMTID")})
-      if (!jar->value(name).isEmpty())
+      if (!qrRequest && !jar->value(name).isEmpty())
         cookie[QString::fromLatin1(name)] =
             QString::fromLatin1(jar->value(name));
     QList<QPair<QByteArray, QByteArray>> headers{
@@ -438,5 +461,29 @@ void Session::complete(int id, QJsonObject data, QString error) {
       }
     }
   }
-  emit finished(id, data, error);
+  auto callback = internalRequests.take(id);
+  if (callback)
+    callback(data, error);
+  else
+    emit finished(id, data, error);
+}
+
+void Session::startLogin() {
+  if (!login)
+    initialize();
+  login->start();
+}
+void Session::cancelLogin() {
+  if (login)
+    login->cancel();
+}
+void Session::restoreAccount() {
+  if (!login)
+    initialize();
+  login->restore();
+}
+void Session::retryLogin() {
+  if (!login)
+    initialize();
+  login->retryAccount();
 }

@@ -12,3 +12,6 @@ SOURCES += ../src/storage.cpp
 HEADERS += ../src/storage.h
 QT += sql
 PKGCONFIG += taglib
+
+SOURCES += ../src/loginflow.cpp
+HEADERS += ../src/loginflow.h

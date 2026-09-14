@@ -10,3 +10,6 @@ RESOURCES += ../resources.qrc
 
 SOURCES += ../src/storage.cpp
 HEADERS += ../src/storage.h
+
+SOURCES += ../src/loginflow.cpp
+HEADERS += ../src/loginflow.h

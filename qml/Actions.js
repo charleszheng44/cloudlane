@@ -5,8 +5,6 @@ var pending = {};
 var pageSpec = null;
 var history = [];
 var accountEpoch = 0;
-var qrEpoch = 0;
-var qrBusy = false;
 var savedQueue = null;
 var savedVideoQueue = null;
 function init(window) {
@@ -21,7 +19,7 @@ function request(path, args, callback, mode, cacheRead) {
     return id;
 }
 function response(id, data, error) {var callback=pending[id];delete pending[id];if(callback)callback(JSON.parse(JSON.stringify(data)),error);}
-function failure(d,e) {return e || (d.code!==200 ? d.message||d.msg||("服务暂不可用（"+d.code+"）") : "");}
+function failure(d,e) {return e || (Number(d.code)!==200 ? d.message||d.msg||("服务暂不可用（"+d.code+"）") : "");}
 function push() {
     history.push({page:app.page,nav:app.nav,category:app.category,items:app.items,kind:app.viewKind,
         resource:app.resource,spec:pageSpec,offset:app.offset,more:app.more,scroll:app.scrollPosition});
@@ -150,39 +148,20 @@ function conversation(item) {
     begin(person.nickname||"私信","feed",true);app.resource={kind:"conversation",id:String(person.userId)};
     fetch(spec("/api/msg/private/history",{userId:String(person.userId),limit:50,time:0,total:"true"},"weapi","msgs","raw"));
 }
-function account(showError) {
-    request("/api/w/nuser/account/get",{},function(d,e){
-        if(!e&&d.profile){
-            if(app.profile.userId && String(app.profile.userId)!==String(d.profile.userId)) {
-                accountEpoch++;pending={};app.viewGeneration++;app.playbackGeneration++;app.backend.stop();
-                app.queue=[];app.queueIndex=-1;app.currentTrack={};app.backend.setMetadata({});app.comments=[];
-                app.lyrics=[];app.contextTrack={};app.panel="";history=[];savedQueue=null;app.fm=false;
-            }
-            app.profile=d.profile;app.backend.saveAccount(String(d.profile.userId));app.closeLogin();app.loginPolling=false;
-            request("/api/song/like/get",{uid:String(d.profile.userId)},function(data,error){if(!error&&data.code===200)app.likedIds=(data.ids||[]).map(String);},"eapi");
-            if(showError)navigate("我的音乐");
-        } else if(showError)app.loginStatus=e||"账户同步失败，请刷新登录";
-    });
+function account(showError){if(showError)app.backend.retryLogin();else app.backend.restoreAccount();}
+function acceptAccount(profile,afterLogin){
+    profile=JSON.parse(JSON.stringify(profile));
+    if(app.profile.userId&&String(app.profile.userId)!==String(profile.userId)){
+        accountEpoch++;pending={};app.viewGeneration++;app.playbackGeneration++;app.backend.stop();
+        app.queue=[];app.queueIndex=-1;app.currentTrack={};app.backend.setMetadata({});app.comments=[];
+        app.lyrics=[];app.contextTrack={};app.panel="";history=[];savedQueue=null;savedVideoQueue=null;app.fm=false;app.videoSession=false;
+    }
+    app.profile=profile;app.closeLogin();
+    request("/api/song/like/get",{uid:String(profile.userId)},function(data,error){if(!error&&Number(data.code)===200)app.likedIds=(data.ids||[]).map(String);},"eapi");
+    if(afterLogin)navigate("我的音乐");
 }
-function login() {
-    var gen=++qrEpoch;qrBusy=false;app.loginPolling=false;app.qr="";app.loginStatus="正在获取二维码…";
-    request("/api/login/qrcode/unikey",{type:3},function(d,e){if(gen!==qrEpoch)return;
-        var key=d.unikey||(d.data||{}).unikey;
-        if(e||!key){app.loginStatus=e||"二维码获取失败，请刷新";return;}
-        app.qrKey=key;app.qr=app.backend.qrImage("https://music.163.com/login?codekey="+key);
-        app.loginStatus="使用网易云音乐手机 App 扫码确认";app.loginPolling=true;
-    },"eapi");
-}
-function cancelLogin(){qrEpoch++;app.loginPolling=false;qrBusy=false;}
-function pollLogin(){
-    if(qrBusy)return;qrBusy=true;var gen=qrEpoch;
-    request("/api/login/qrcode/client/login",{key:app.qrKey,type:3},function(d,e){if(gen!==qrEpoch)return;qrBusy=false;
-        if(e){app.loginStatus=e;return;}
-        if(d.code===803){app.loginPolling=false;app.loginStatus="正在同步账户…";account(true);}
-        else if(d.code===800){app.loginPolling=false;app.loginStatus="二维码已过期，请刷新";}
-        else if(d.code===802)app.loginStatus="已扫码，请在手机上确认";
-    },"eapi");
-}
+function login(){app.backend.startLogin();}
+function cancelLogin(){app.backend.cancelLogin();}
 function logout(){
     accountEpoch++;app.viewGeneration++;app.playbackGeneration++;cancelLogin();pending={};
     app.backend.logout();app.writeBusy=false;app.profile={};app.queue=[];app.queueIndex=-1;app.currentTrack={};app.likedIds=[];

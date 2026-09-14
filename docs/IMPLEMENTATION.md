@@ -6,6 +6,7 @@ Development preview, 13 September 2026. A working C++/QML implementation is incl
 
 - Qt6 Quick UI, live Omarchy palette/font-size integration, system monospace font, square controls, four-route navigation, responsive cards and virtualized track lists.
 - Native WEAPI/EAPI/XEAPI transport using Qt Network and OpenSSL, without a Node service or Electron runtime. Real anonymous search and QR-challenge retrieval pass.
+- Consumer QR approval recovered and persisted in Secret Service; saved-account restoration, playlist listing, daily recommendations and a full-track playback grant verified with an ordinary account. Native background login polling and retry paths have regression tests.
 - libmpv audio and embedded OpenGL video, play/pause/seek, service-grant quality/trial handling, duplicate-safe queue entries, move/remove, future-queue shuffle and repeat.
 - SQLite cache and local-file library, worker scans through TagLib, file/folder import, copied NetEase resource links and desktop file opening.
 - Download engine with separate download grants, durable tasks, three-transfer limit, pause/retry, Range handling, size/checksum verification and atomic final-file rename. The engine is fixture-tested; service grants require account verification.
@@ -29,7 +30,7 @@ Source-backed request paths are not proof that each current account response wor
 
 ## Full-release work remaining
 
-- Real-account acceptance: QR persistence/restart, entitled playback and download grants, all library payloads, ownership checks and write acceptance.
+- Remaining real-account acceptance: a fresh approval through the final QR flow, online stream decoding, download grants, all library payloads, ownership checks and write acceptance. Saved-session restoration, playlists, daily recommendations and one playback grant pass.
 - Cloud metadata editing/matching/delete/upload, upload credentials and task recovery.
 - Playlist descriptions/covers/privacy transitions/reorder/import and durable reconciliation for ambiguous writes.
 - Word-level/romanized lyrics, opt-in listening-history reporting, richer artist/discovery filters and complete local-library search/removal workflows.

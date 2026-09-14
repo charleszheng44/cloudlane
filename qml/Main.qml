@@ -35,10 +35,8 @@ ApplicationWindow {
     onRestoreScrollChanged:Qt.callLater(function(){trackList.contentY=restoreScroll;cardGrid.contentY=restoreScroll})
     property string query:""
     property int searchType:0
-    property string qr:""
-    property string qrKey:""
-    property string loginStatus:""
-    property bool loginPolling:false
+    property string qr:Backend.loginQr
+    property string loginStatus:Backend.loginStatus
     property var currentTrack:({})
     property var queue:[]
     property int queueIndex:-1
@@ -77,7 +75,7 @@ ApplicationWindow {
         nav==="我的音乐"?["歌单","喜欢的音乐","专辑","歌手","播客","收藏视频","最近播放","已购专辑","音乐云盘","下载","本地音乐"]:
         nav==="动态"?["关注动态","通知","私信"]:[]
     function login(){openLogin()}
-    function openLogin(){loginPopup.open();Actions.login()}
+    function openLogin(){loginPopup.open();if(!window.profile.userId)Actions.login()}
     function closeLogin(){loginPopup.close()}
     function closePlaylistEditor(){playlistEditor.close()}
     function openAddDialog(){editError="";addDialog.open()}
@@ -88,6 +86,7 @@ ApplicationWindow {
     onPanelChanged:{if(panel)contextDrawer.open();else contextDrawer.close()}
     Connections {
         target:Backend
+        function onAccountReady(profile,afterLogin){Actions.acceptAccount(profile,afterLogin)}
         function onResponse(id,data,error){Actions.response(id,data,error)}
         function onMessage(text){window.error=text}
         function onPlaybackEnded(){if(window.videoSession)Actions.leaveVideo();else{Actions.saveProgress();Actions.next(true,false)}}
@@ -97,7 +96,6 @@ ApplicationWindow {
         function onOpenRequested(uri){Actions.handleLink(uri)}
         function onDesktopAction(action){Actions.desktopAction(action)}
     }
-    Timer { interval:2500; running:window.loginPolling; repeat:true; onTriggered:Actions.pollLogin() }
     Timer { interval:10000; running:true; repeat:true; onTriggered:Actions.saveProgress() }
     Timer { interval:60000; running:window.sleepRemaining>0; repeat:true; onTriggered:{window.sleepRemaining--;if(!window.sleepRemaining)Backend.setPaused(true)} }
     ColumnLayout {
@@ -313,10 +311,11 @@ ApplicationWindow {
         contentItem:ColumnLayout {
             spacing:16
             Label { text:window.profile.userId?window.profile.nickname:"扫码登录"; font.pixelSize:22; Layout.fillWidth:true; elide:Text.ElideRight }
-            Image { source:window.qr; Layout.preferredWidth:248; Layout.preferredHeight:248; Layout.alignment:Qt.AlignHCenter; fillMode:Image.PreserveAspectFit; smooth:false }
+            Image { source:window.qr; visible:!window.profile.userId; Layout.preferredWidth:248; Layout.preferredHeight:248; Layout.alignment:Qt.AlignHCenter; fillMode:Image.PreserveAspectFit; smooth:false }
             Label { text:window.loginStatus; Layout.fillWidth:true; wrapMode:Text.Wrap }
             RowLayout {
-                ActionButton { text:"刷新"; onClicked:Actions.login() }
+                ActionButton { text:"刷新"; visible:!window.profile.userId&&Backend.loginPhase!=="authorizing"; onClicked:Actions.login() }
+                ActionButton { text:"重试同步"; visible:Backend.loginPhase==="account-error"; onClicked:Backend.retryLogin() }
                 ActionButton { text:"取消"; onClicked:loginPopup.close() }
                 ActionButton { text:"退出账户"; visible:!!window.profile.userId; onClicked:Actions.logout() }
             }

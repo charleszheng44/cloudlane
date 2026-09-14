@@ -10,3 +10,6 @@ QMAKE_CXXFLAGS += -Wall -Wextra
 
 SOURCES += src/storage.cpp
 HEADERS += src/storage.h
+
+SOURCES += src/loginflow.cpp
+HEADERS += src/loginflow.h

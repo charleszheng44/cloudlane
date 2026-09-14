@@ -27,10 +27,11 @@ int main(int argc, char **argv) {
       "urls", "Local media files or NetEase resource links", "[urls...]");
   parser.process(app);
   const auto urls = parser.positionalArguments();
+  const bool showLogin = parser.isSet("login");
+  const bool smokeTest = parser.isSet("smoke-test");
   QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
   QQuickStyle::setStyle("Basic");
-  const bool isolated = app.arguments().contains("--isolated") ||
-                        app.arguments().contains("--smoke-test");
+  const bool isolated = parser.isSet("isolated") || smokeTest;
   auto bus = QDBusConnection::sessionBus();
   if (!isolated && bus.isConnected() &&
       !bus.registerService("org.mpris.MediaPlayer2.yunjian")) {
@@ -79,12 +80,12 @@ int main(int argc, char **argv) {
     for (const auto &uri : urls)
       emit backend.openRequested(uri);
   });
-  if (app.arguments().contains("--login"))
+  if (showLogin)
     QTimer::singleShot(250, &app, [&engine] {
       if (!engine.rootObjects().isEmpty())
         QMetaObject::invokeMethod(engine.rootObjects().first(), "login");
     });
-  if (app.arguments().contains("--smoke-test"))
+  if (smokeTest)
     QTimer::singleShot(2500, &app, &QCoreApplication::quit);
   return app.exec();
 }

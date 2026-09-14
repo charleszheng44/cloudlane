@@ -81,6 +81,12 @@ private slots:
     backend.stop();
     QVERIFY(!backend.playing());
     if (qEnvironmentVariableIsSet("YUNJIAN_LIVE_TESTS")) {
+      QVERIFY(QMetaObject::invokeMethod(window, "login"));
+      QTRY_VERIFY_WITH_TIMEOUT(!backend.loginQr().isEmpty(), 25000);
+      QCOMPARE(backend.loginPhase(), QString("waiting"));
+      QCOMPARE(window->property("qr").toString(), backend.loginQr());
+      QVERIFY(QMetaObject::invokeMethod(window, "closeLogin"));
+      QTRY_COMPARE(backend.loginPhase(), QString("idle"));
       evaluate(
           "window.videoVisible=false; window.viewGeneration++; "
           "window.loading=''; window.error=''; Actions.search('海阔天空',0)");

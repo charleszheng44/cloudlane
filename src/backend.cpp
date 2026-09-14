@@ -38,6 +38,20 @@ Backend::Backend(QObject *p)
             emit response(id, data.toVariantMap(), error);
           });
   connect(session, &Session::persistenceStatus, this, &Backend::message);
+  connect(session, &Session::loginChanged, this,
+          [this](QString state, QString text) {
+            phase = state;
+            loginMessage = text;
+            emit loginChanged();
+          });
+  connect(session, &Session::loginChallenge, this, [this](QString url) {
+    qr = url.isEmpty() ? QString() : qrImage(url);
+    emit loginChanged();
+  });
+  connect(session, &Session::accountReady, this,
+          [this](QJsonObject profile, bool afterLogin) {
+            emit accountReady(profile.toVariantMap(), afterLogin);
+          });
   networkThread.start();
   readTheme();
   connect(&watcher, &QFileSystemWatcher::fileChanged, this,
@@ -419,4 +433,21 @@ QVariantMap Backend::parseLink(QString text) const {
   return {
       {"id", id},     {"kind", kind}, {"name", QStringLiteral("网易云音乐")},
       {"artist", ""}, {"album", ""},  {"cover", ""}};
+}
+
+void Backend::startLogin() {
+  QMetaObject::invokeMethod(session, &Session::startLogin,
+                            Qt::QueuedConnection);
+}
+void Backend::cancelLogin() {
+  QMetaObject::invokeMethod(session, &Session::cancelLogin,
+                            Qt::QueuedConnection);
+}
+void Backend::restoreAccount() {
+  QMetaObject::invokeMethod(session, &Session::restoreAccount,
+                            Qt::QueuedConnection);
+}
+void Backend::retryLogin() {
+  QMetaObject::invokeMethod(session, &Session::retryLogin,
+                            Qt::QueuedConnection);
 }

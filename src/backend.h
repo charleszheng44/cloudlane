@@ -7,6 +7,9 @@
 #include <mpv/client.h>
 class Backend : public QObject {
   Q_OBJECT
+  Q_PROPERTY(QString loginPhase READ loginPhase NOTIFY loginChanged)
+  Q_PROPERTY(QString loginStatus READ loginStatus NOTIFY loginChanged)
+  Q_PROPERTY(QString loginQr READ loginQr NOTIFY loginChanged)
   Q_PROPERTY(QVariantMap theme READ theme NOTIFY themeChanged)
   Q_PROPERTY(int fontSize READ fontSize NOTIFY themeChanged)
   Q_PROPERTY(bool playing READ playing NOTIFY playerChanged)
@@ -20,6 +23,13 @@ class Backend : public QObject {
 public:
   explicit Backend(QObject *parent = nullptr);
   ~Backend();
+  QString loginPhase() const { return phase; }
+  QString loginStatus() const { return loginMessage; }
+  QString loginQr() const { return qr; }
+  Q_INVOKABLE void startLogin();
+  Q_INVOKABLE void cancelLogin();
+  Q_INVOKABLE void restoreAccount();
+  Q_INVOKABLE void retryLogin();
   QVariantMap theme() const { return colors; }
   int fontSize() const { return baseSize; }
   bool playing() const { return loaded && !paused; }
@@ -60,6 +70,8 @@ public:
   Q_INVOKABLE void setState(QString key, QString value);
   Q_INVOKABLE void copyText(QString text);
 signals:
+  void loginChanged();
+  void accountReady(QVariantMap profile, bool afterLogin);
   void response(int id, QVariantMap data, QString error);
   void message(QString text);
   void themeChanged();
@@ -83,6 +95,7 @@ private:
   Session *session;
   QVariantList downloadTasks;
   int nextId = 0;
+  QString phase = "idle", loginMessage, qr;
   mpv_handle *mpv = nullptr;
   bool paused = true, loaded = false, scanInProgress = false;
   QVariantMap trackMetadata;

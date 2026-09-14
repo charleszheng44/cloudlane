@@ -4,13 +4,14 @@ repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_dir"
 node tests/models.test.cjs
 node tests/actions.test.cjs
-for test_name in crypto_test storage_test mpris_test; do
+for test_name in crypto_test storage_test mpris_test loginflow_test; do
   test_dir="build/${test_name//_/-}"
   mkdir -p "$test_dir"
   qmake6 -o "$test_dir/Makefile" "tests/$test_name.pro"
   make -C "$test_dir" -j"${YUNJIAN_JOBS:-4}" > "$test_dir/build.log" 2>&1
 done
 ./build/crypto-test/crypto-test tests/transport-vectors.json
+./build/loginflow-test/loginflow-test
 ffmpeg -hide_banner -loglevel error -f lavfi -i sine=frequency=220:sample_rate=44100 -t 2 -c:a pcm_s16le -y build/test-audio.wav
 YUNJIAN_TEST_AUDIO="$repo_dir/build/test-audio.wav" ./build/storage-test/storage-test
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software ./build/mpris-test/mpris-test
