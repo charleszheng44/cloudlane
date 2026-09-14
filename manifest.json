@@ -5,13 +5,18 @@
   "version": "0.1.0",
   "author": "charleszheng44",
   "description": "Launcher and playback controls for the Cloudlane native NetEase Cloud Music app. Requires a separate app build.",
-  "kinds": ["bar-widget"],
-  "entryPoints": { "barWidget": "plugin/BarWidget.qml" },
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "plugin/BarWidget.qml"
+  },
   "barWidget": {
     "displayName": "Cloudlane",
     "description": "Open Cloudlane and control its music through MPRIS",
     "category": "Media",
     "allowMultiple": false,
     "defaultSection": "right"
-  }
+  },
+  "license": "GPL-3.0-or-later"
 }

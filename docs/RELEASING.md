@@ -1,6 +1,6 @@
 # Publishing Cloudlane
 
-The repository is being prepared for open source. It remains a private development repository until the owner chooses to publish it. No marketplace submission or approval has occurred.
+Cloudlane is a public, open-source development preview. Marketplace listing is pending; publication requires the marketplace’s own validation and maintainer approval.
 
 ## Release preparation
 
@@ -10,7 +10,7 @@ The repository is being prepared for open source. It remains a private developme
 - Record tested features and remaining gaps in `IMPLEMENTATION.md`. Do not call this full NetEase parity. Native x86_64 has been exercised locally; other architectures and a clean package-manager installation need their own acceptance.
 - Confirm a complete hosted CI run passes; the initial run could not allocate a runner and executed no build/test steps.
 - Review the exact release diff, choose a version, and synchronize native app/manifest/package versions. A marketplace manifest requires a three-part version even while the app is a development preview.
-- When ready, change GitHub visibility to public, enable private vulnerability reporting, confirm the README and image render, and record the exact commit for review. Do not publish account acceptance artifacts.
+- Confirm the public README and preview image render, keep private vulnerability reporting enabled, and record the exact commit for review. Do not publish account acceptance artifacts.
 
 ## Marketplace preparation
 
@@ -24,7 +24,7 @@ The marketplace's compatibility check and Automated Security Baseline operate on
 
 Title: `[Plugin]: Cloudlane`
 
-This is a draft, not a submitted issue. Leave the checklist unchecked until the owner has reviewed every statement and the repository is public. Obtain the owner's explicit approval of the completed issue before creating it.
+This template records the submission metadata. Use the current exact commit and check every statement before submitting. The owner has authorized publication of this development preview and its marketplace submission.
 
 ### Repository URL
 
@@ -48,8 +48,8 @@ Native Qt6/libmpv NetEase Cloud Music app with an optional Omarchy Quattro bar l
 
 ### Submission checklist
 
-- [ ] The repository is public and contains installation and removal instructions.
-- [ ] I have documented the plugin license and any external dependencies.
-- [ ] I confirm that I own or have permission to submit this plugin and its preview assets.
-- [ ] The plugin does not overwrite user configuration without explicit consent.
-- [ ] I understand that approval is for listing and is not a security review.
+- [x] The repository is public and contains installation and removal instructions.
+- [x] I have documented the plugin license and any external dependencies.
+- [x] I confirm that I own or have permission to submit this plugin and its preview assets.
+- [x] The plugin does not overwrite user configuration without explicit consent.
+- [x] I understand that approval is for listing and is not a security review.
