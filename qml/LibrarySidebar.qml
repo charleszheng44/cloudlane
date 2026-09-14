@@ -30,10 +30,10 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent; anchors.margins: 10
         spacing: 6
-        NavigationButton { text: "发现音乐"; symbol: "discover"; selected: sidebar.app.nav === "发现"; Layout.fillWidth: true; onClicked: Actions.navigate("发现") }
-        NavigationButton { text: "动态"; symbol: "activity"; selected: sidebar.app.nav === "动态"; Layout.fillWidth: true; onClicked: Actions.navigate("动态") }
+        NavigationButton { text: "Discover"; symbol: "discover"; selected: sidebar.app.nav === "Discover"; Layout.fillWidth: true; onClicked: Actions.navigate("Discover") }
+        NavigationButton { text: "Activity"; symbol: "activity"; selected: sidebar.app.nav === "Activity"; Layout.fillWidth: true; onClicked: Actions.navigate("Activity") }
         Rectangle { Layout.fillWidth: true; height: 1; color: Backend.theme.selection; Layout.topMargin: 4; Layout.bottomMargin: 4 }
-        NavigationButton { objectName: "libraryNavigation"; text: "我的音乐"; symbol: "library"; selected: sidebar.app.nav === "我的音乐"; Layout.fillWidth: true; onClicked: Actions.navigate("我的音乐") }
+        NavigationButton { objectName: "libraryNavigation"; text: "Your Library"; symbol: "library"; selected: sidebar.app.nav === "Your Library"; Layout.fillWidth: true; onClicked: Actions.navigate("Your Library") }
         Flickable {
             visible: sidebar.expanded
             Layout.fillWidth: true; Layout.preferredHeight: 32
@@ -41,12 +41,12 @@ Rectangle {
             RowLayout {
                 id: filters; spacing: 6
                 Repeater {
-                    model: ["歌单", "专辑", "歌手", "播客"]
-                    ActionButton { required property string modelData; text: modelData; quiet: true; selected: sidebar.app.nav === "我的音乐" && sidebar.app.category === modelData; onClicked: Actions.navigate("我的音乐", modelData) }
+                    model: ["Playlists", "Albums", "Artists", "Podcasts"]
+                    ActionButton { required property string modelData; text: modelData; quiet: true; selected: sidebar.app.nav === "Your Library" && sidebar.app.category === modelData; onClicked: Actions.navigate("Your Library", modelData) }
                 }
             }
         }
-        NavigationButton { text: "喜欢的音乐"; symbol: "heart"; selected: sidebar.app.nav === "我的音乐" && sidebar.app.category === "喜欢的音乐"; Layout.fillWidth: true; onClicked: Actions.navigate("我的音乐", "喜欢的音乐") }
+        NavigationButton { text: "Liked songs"; symbol: "heart"; selected: sidebar.app.nav === "Your Library" && sidebar.app.category === "Liked songs"; Layout.fillWidth: true; onClicked: Actions.navigate("Your Library", "Liked songs") }
         ListView {
             id: playlists
             objectName: "sidebarPlaylists"
@@ -71,17 +71,17 @@ Rectangle {
                         visible: sidebar.expanded
                         Layout.fillWidth: true; spacing: 3
                         Label { text: playlist.modelData.name; Layout.fillWidth: true; elide: Text.ElideRight; textFormat: Text.PlainText }
-                        Label { text: "歌单 · " + playlist.modelData.artist; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 11; opacity: .6; textFormat: Text.PlainText }
+                        Label { text: "Playlist · " + playlist.modelData.artist; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 11; opacity: .6; textFormat: Text.PlainText }
                     }
                 }
                 Accessible.name: modelData.name
                 ToolTip.visible: hovered && !sidebar.expanded; ToolTip.text: modelData.name
                 onClicked: Actions.open(modelData)
             }
-            Label { anchors.centerIn: parent; width: parent.width - 12; visible: sidebar.expanded && !sidebar.app.profile.userId; text: "登录后，你的歌单会显示在这里"; wrapMode: Text.Wrap; opacity: .6; font.pixelSize: 12 }
+            Label { anchors.centerIn: parent; width: parent.width - 12; visible: sidebar.expanded && !sidebar.app.profile.userId; text: "Sign in to see your playlists here"; wrapMode: Text.Wrap; opacity: .6; font.pixelSize: 12 }
         }
-        NavigationButton { text: "下载"; symbol: "download"; Layout.fillWidth: true; onClicked: Actions.navigate("我的音乐", "下载") }
-        NavigationButton { text: "本地音乐"; symbol: "music"; Layout.fillWidth: true; onClicked: Actions.navigate("我的音乐", "本地音乐") }
-        NavigationButton { text: "偏好设置"; symbol: "settings"; Layout.fillWidth: true; onClicked: sidebar.settingsRequested() }
+        NavigationButton { text: "Downloads"; symbol: "download"; Layout.fillWidth: true; onClicked: Actions.navigate("Your Library", "Downloads") }
+        NavigationButton { text: "Local music"; symbol: "music"; Layout.fillWidth: true; onClicked: Actions.navigate("Your Library", "Local music") }
+        NavigationButton { text: "Settings"; symbol: "settings"; Layout.fillWidth: true; onClicked: sidebar.settingsRequested() }
     }
 }

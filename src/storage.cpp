@@ -51,7 +51,7 @@ void Storage::initialize() {
       QSqlDatabase::addDatabase("QSQLITE", QUuid::createUuid().toString());
   database.setDatabaseName(dir + "/library.sqlite3");
   if (!database.open()) {
-    emit message("音乐库数据库无法打开：" + database.lastError().text());
+    emit message("Could not open the music library database: " + database.lastError().text());
     return;
   }
   QSqlQuery q(database);
@@ -65,7 +65,7 @@ void Storage::initialize() {
          "TEXT NOT NULL, track BLOB NOT NULL, path TEXT NOT NULL, temp TEXT "
          "NOT NULL, state TEXT NOT NULL, received INTEGER NOT NULL, total "
          "INTEGER NOT NULL, error TEXT NOT NULL, time INTEGER NOT NULL)");
-  q.exec("UPDATE downloads SET state='paused',error='重新获取下载权限后可继续' "
+  q.exec("UPDATE downloads SET state='paused',error='Renew download access to resume' "
          "WHERE state='running'");
   QVariantList tracks;
   if (q.exec("SELECT data FROM local_tracks ORDER BY id"))
@@ -111,12 +111,12 @@ void Storage::storeLocal(QVariantList tracks) {
         1, QJsonDocument::fromVariant(track).toJson(QJsonDocument::Compact));
     if (!q.exec()) {
       database.rollback();
-      emit message("本地音乐库保存失败");
+      emit message("Could not save the local music library");
       return;
     }
   }
   if (!database.commit())
-    emit message("本地音乐库保存失败");
+    emit message("Could not save the local music library");
 }
 void Storage::account(QString id) {
   if (accountId == id) {
@@ -161,7 +161,7 @@ void Storage::updateTask(const std::shared_ptr<Transfer> &t, QString state,
   q.addBindValue(error.isNull() ? QStringLiteral("") : error);
   q.addBindValue(t->id);
   if (!q.exec())
-    t->error = "下载状态无法保存：" + q.lastError().text();
+    t->error = "Could not save download status: " + q.lastError().text();
   publish();
 }
 void Storage::pauseDownload(QString id) {
@@ -174,16 +174,16 @@ void Storage::pauseDownload(QString id) {
 void Storage::startDownload(QVariantMap track, QVariantMap grant,
                             QString retryId) {
   if (accountId.isEmpty()) {
-    emit message("请先登录再下载");
+    emit message("Sign in before downloading");
     return;
   }
   if (active.size() >= 3) {
-    emit message("最多同时下载 3 首，请稍后重试");
+    emit message("Up to 3 downloads can run at once. Please try again later.");
     return;
   }
   for (const auto &t : active)
     if (t->owner == accountId && t->track.value("id") == track.value("id")) {
-      emit message("此歌曲已在下载");
+      emit message("This track is already downloading");
       return;
     }
   QUrl url(grant.value("url").toString());
@@ -192,7 +192,7 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
       !QStringList{"mp3", "flac", "m4a", "aac", "ogg", "opus", "wav"}.contains(
           type) ||
       !grant.value("freeTrialInfo").isNull()) {
-    emit message("服务未提供普通音频文件的下载权限");
+    emit message("The service did not grant access to a standard audio file");
     return;
   }
   auto t = std::make_shared<Transfer>();
@@ -201,7 +201,7 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
   t->checksum = grant.value("md5").toString();
   t->total = grant.value("size").toLongLong();
   if (t->total > 2LL * 1024 * 1024 * 1024) {
-    emit message("文件超过当前下载大小限制");
+    emit message("The file exceeds the download size limit");
     return;
   }
   if (!retryId.isEmpty()) {
@@ -211,7 +211,7 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
     q.addBindValue(retryId);
     q.addBindValue(accountId);
     if (!q.exec() || !q.next()) {
-      emit message("下载任务不存在");
+      emit message("Download task not found");
       return;
     }
     t->id = retryId;
@@ -222,10 +222,10 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
     auto dir =
         musicRoot.isEmpty()
             ? QStandardPaths::writableLocation(QStandardPaths::MusicLocation) +
-                  "/云间"
+                  "/Cloudlane"
             : musicRoot;
     if (!QDir().mkpath(dir)) {
-      emit message("下载目录无法创建");
+      emit message("Could not create the download folder");
       return;
     }
     auto name = track.value("name").toString().left(80);
@@ -243,7 +243,7 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
     q.addBindValue(t->total);
     q.addBindValue(QDateTime::currentMSecsSinceEpoch());
     if (!q.exec()) {
-      emit message("无法保存下载任务");
+      emit message("Could not save the download task");
       return;
     }
   }
@@ -279,20 +279,20 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
       t->headersChecked = true;
       if (status == 200 && t->resumeOffset) {
         if (!t->file.resize(0) || !t->file.seek(0))
-          t->error = "无法重置下载文件";
+          t->error = "Could not reset the download file";
         t->received = 0;
       }
       if (status == 206 &&
           !t->reply->rawHeader("Content-Range")
                .startsWith("bytes " + QByteArray::number(t->resumeOffset) +
                            "-"))
-        t->error = "下载续传范围不匹配";
+        t->error = "The download resume range does not match";
     }
     while (t->reply->bytesAvailable() > 0 && t->error.isEmpty()) {
       auto bytes = t->reply->read(256 * 1024);
       if (t->received + bytes.size() > 2LL * 1024 * 1024 * 1024 ||
           (t->total > 0 && t->received + bytes.size() > t->total)) {
-        t->error = "文件大小与下载许可不符";
+        t->error = "The file size does not match the download grant";
         break;
       }
       if (t->file.write(bytes) != bytes.size()) {
@@ -315,27 +315,27 @@ void Storage::startDownload(QVariantMap track, QVariantMap grant,
     QString state = "complete", error = t->error;
     if (t->paused) {
       state = "paused";
-      error = "重新获取下载权限后可继续";
+      error = "Renew download access to resume";
     } else if (error.isEmpty() && t->reply->error() != QNetworkReply::NoError)
       error = t->reply->errorString();
     if (state == "complete" && error.isEmpty()) {
       if (!t->headersChecked || t->received <= 0 ||
           (t->total > 0 && t->received != t->total))
-        error = "下载文件不完整";
+        error = "The downloaded file is incomplete";
       else if (!t->checksum.isEmpty()) {
         QFile file(t->temp);
         QCryptographicHash hash(QCryptographicHash::Md5);
         if (!file.open(QIODevice::ReadOnly) || !hash.addData(&file) ||
             hash.result().toHex() != t->checksum.toLatin1().toLower())
-          error = "下载文件校验失败";
+          error = "Download integrity check failed";
       }
       if (error.isEmpty()) {
         TagLib::FileRef file(t->temp.toUtf8().constData());
         if (file.isNull() || !file.audioProperties())
-          error = "此下载不是可验证的普通音频文件";
+          error = "This download is not a verifiable standard audio file";
       }
       if (error.isEmpty() && !QFile::rename(t->temp, t->path))
-        error = "下载完成，但无法保存最终文件";
+        error = "Download completed, but the final file could not be saved";
     }
     if (state != "paused" && !error.isEmpty())
       state = "failed";

@@ -13,3 +13,6 @@ HEADERS += ../src/storage.h
 
 SOURCES += ../src/loginflow.cpp
 HEADERS += ../src/loginflow.h
+
+SOURCES += ../src/theme.cpp
+HEADERS += ../src/theme.h

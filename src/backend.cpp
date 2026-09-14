@@ -53,11 +53,7 @@ Backend::Backend(QObject *p)
             emit accountReady(profile.toVariantMap(), afterLogin);
           });
   networkThread.start();
-  readTheme();
-  connect(&watcher, &QFileSystemWatcher::fileChanged, this,
-          [this] { QTimer::singleShot(150, this, &Backend::readTheme); });
-  connect(&watcher, &QFileSystemWatcher::directoryChanged, this,
-          [this] { QTimer::singleShot(150, this, &Backend::readTheme); });
+  connect(&systemTheme, &Theme::changed, this, &Backend::themeChanged);
   gain = qBound(0.0, QSettings().value("player/volume", 65).toDouble(), 100.0);
   mpv = mpv_create();
   if (mpv) {
@@ -146,11 +142,11 @@ QString Backend::qrImage(QString text) {
 void Backend::load(QString url, double previewEnd, double previewStart,
                    bool startPaused) {
   if (!mpv) {
-    emit message("系统播放器初始化失败");
+    emit message("Could not initialize the media player");
     return;
   }
   if (previewStart < 0 || (previewEnd > 0 && previewEnd <= previewStart)) {
-    emit message("试听范围无效");
+    emit message("Invalid preview range");
     return;
   }
   rangeStart = previewStart;
@@ -158,7 +154,7 @@ void Backend::load(QString url, double previewEnd, double previewStart,
   QUrl uri(url);
   if (uri.scheme() != "https" && uri.scheme() != "http" &&
       uri.scheme() != "file") {
-    emit message("不支持的媒体地址");
+    emit message("Unsupported media address");
     return;
   }
   auto path = uri.isLocalFile() ? uri.toLocalFile().toUtf8() : uri.toEncoded();
@@ -251,7 +247,7 @@ void Backend::drainPlayer() {
       } else if (end->reason == MPV_END_FILE_REASON_ERROR) {
         paused = true;
         emit playerChanged();
-        emit message(QString("播放失败：") + mpv_error_string(end->error));
+        emit message(QString("Playback failed: ") + mpv_error_string(end->error));
       }
     }
   }
@@ -280,7 +276,7 @@ QVariantList Backend::localFiles(QVariantList urls) {
     QVariantMap item{{"id", uri.toString()},
                      {"url", uri.toString()},
                      {"name", QFileInfo(path).completeBaseName()},
-                     {"artist", "本地音乐"},
+                     {"artist", "Local music"},
                      {"album", ""},
                      {"duration", 0},
                      {"kind", "local"}};
@@ -311,49 +307,6 @@ void Backend::setState(QString key, QString value) {
 void Backend::copyText(QString text) {
   QGuiApplication::clipboard()->setText(text);
 }
-void Backend::readTheme() {
-  const auto state = qEnvironmentVariable("XDG_STATE_HOME",
-                                          QDir::homePath() + "/.local/state");
-  const auto config =
-      qEnvironmentVariable("XDG_CONFIG_HOME", QDir::homePath() + "/.config");
-  const auto dir = state + "/omarchy/current/theme";
-  QVariantMap next{{"background", "#1a1b26"}, {"dark_background", "#13141c"},
-                   {"foreground", "#a9b1d6"}, {"light_foreground", "#b4bee6"},
-                   {"accent", "#7aa2f7"},     {"selection", "#292e42"},
-                   {"muted", "#414868"},      {"red", "#f7768e"}};
-  QFile palette(dir + "/colors.toml");
-  if (palette.open(QIODevice::ReadOnly)) {
-    QRegularExpression re("^([a-z_]+)\\s*=\\s*\"(#[0-9a-fA-F]{6})\"",
-                          QRegularExpression::MultilineOption);
-    auto matches = re.globalMatch(QString::fromUtf8(palette.readAll()));
-    while (matches.hasNext()) {
-      auto m = matches.next();
-      next[m.captured(1)] = m.captured(2);
-    }
-  }
-  for (const auto &path :
-       {dir + "/shell.toml", config + "/omarchy/shell.toml"}) {
-    QFile f(path);
-    if (f.open(QIODevice::ReadOnly)) {
-      QRegularExpression re("base-size\\s*=\\s*(\\d+)");
-      auto m = re.match(QString::fromUtf8(f.readAll()));
-      if (m.hasMatch())
-        baseSize = qBound(10, m.captured(1).toInt(), 32);
-    }
-    if (QFileInfo::exists(path) && !watcher.files().contains(path))
-      watcher.addPath(path);
-  }
-  for (const auto &path :
-       {dir, state + "/omarchy/current", config + "/omarchy"})
-    if (QFileInfo::exists(path) && !watcher.directories().contains(path))
-      watcher.addPath(path);
-  if (QFileInfo::exists(palette.fileName()) &&
-      !watcher.files().contains(palette.fileName()))
-    watcher.addPath(palette.fileName());
-  colors = next;
-  emit themeChanged();
-}
-
 void Backend::setPaused(bool value) {
   if (!mpv)
     return;
@@ -369,7 +322,7 @@ QString Backend::newId() const {
 }
 void Backend::scanLocal(QVariantList urls) {
   if (scanInProgress) {
-    emit message("正在扫描音乐，请稍候");
+    emit message("Scanning your music. Please wait.");
     return;
   }
   scanInProgress = true;
@@ -378,7 +331,7 @@ void Backend::scanLocal(QVariantList urls) {
           [this, watcher] {
             scanInProgress = false;
             if (watcher->result().size() >= 20000)
-              emit message("单次扫描上限为 20,000 首；可继续选择其他文件夹");
+              emit message("Each scan supports up to 20,000 tracks. You can add more folders afterward.");
             emit localReady(watcher->result());
             watcher->deleteLater();
           });
@@ -434,7 +387,7 @@ QVariantMap Backend::parseLink(QString text) const {
            .contains(kind))
     return {};
   return {
-      {"id", id},     {"kind", kind}, {"name", QStringLiteral("网易云音乐")},
+      {"id", id},     {"kind", kind}, {"name", QStringLiteral("NetEase Cloud Music")},
       {"artist", ""}, {"album", ""},  {"cover", ""}};
 }
 

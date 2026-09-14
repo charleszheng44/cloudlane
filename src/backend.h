@@ -1,7 +1,7 @@
 #pragma once
 #include "session.h"
 #include "storage.h"
-#include <QFileSystemWatcher>
+#include "theme.h"
 #include <QThread>
 #include <QVariantMap>
 #include <mpv/client.h>
@@ -30,8 +30,8 @@ public:
   Q_INVOKABLE void cancelLogin();
   Q_INVOKABLE void restoreAccount();
   Q_INVOKABLE void retryLogin();
-  QVariantMap theme() const { return colors; }
-  int fontSize() const { return baseSize; }
+  QVariantMap theme() const { return systemTheme.colors(); }
+  int fontSize() const { return systemTheme.fontSize(); }
   bool playing() const { return loaded && !paused; }
   bool hasMedia() const { return loaded; }
   mpv_handle *playerHandle() const { return mpv; }
@@ -88,7 +88,6 @@ signals:
   void seeked(qint64 position);
 
 private:
-  void readTheme();
   void drainPlayer();
   QThread networkThread;
   Storage *storage;
@@ -101,7 +100,5 @@ private:
   QVariantMap trackMetadata;
   double playbackRate = 1, rangeStart = 0, rangeEnd = 0;
   double time = 0, length = 0, gain = 65;
-  QVariantMap colors;
-  int baseSize = 14;
-  QFileSystemWatcher watcher;
+  Theme systemTheme;
 };

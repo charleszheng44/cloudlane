@@ -32,7 +32,7 @@ public:
       QMetaObject::invokeMethod(
           backend,
           [backend, result] {
-            emit backend->message(QStringLiteral("视频渲染初始化失败：") +
+            emit backend->message(QStringLiteral("Could not initialize video rendering: ") +
                                   mpv_error_string(result));
           },
           Qt::QueuedConnection);

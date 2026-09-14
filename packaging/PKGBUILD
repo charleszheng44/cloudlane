@@ -1,0 +1,35 @@
+# Maintainer: charleszheng44 <https://github.com/charleszheng44>
+pkgname=cloudlane-git
+pkgver=0.1.0.r0.g0000000
+pkgrel=1
+pkgdesc='Native NetEase Cloud Music desktop app for Omarchy (development preview)'
+arch=('x86_64' 'aarch64')
+url='https://github.com/charleszheng44/cloudlane'
+license=('GPL-3.0-or-later')
+depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-imageformats' 'mpv' 'libsecret' 'openssl' 'qrencode' 'taglib' 'zlib')
+makedepends=('git')
+provides=('cloudlane')
+conflicts=('cloudlane')
+source=('cloudlane::git+https://github.com/charleszheng44/cloudlane.git')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/cloudlane"
+  printf '0.1.0.r%s.g%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "$srcdir/cloudlane"
+  mkdir -p build
+  qmake6 -o build/Makefile cloudlane.pro
+  make -C build
+}
+
+package() {
+  cd "$srcdir/cloudlane"
+  install -Dm755 build/cloudlane "$pkgdir/usr/bin/cloudlane"
+  install -Dm644 packaging/io.github.charleszheng44.Cloudlane.desktop "$pkgdir/usr/share/applications/io.github.charleszheng44.Cloudlane.desktop"
+  install -Dm644 packaging/io.github.charleszheng44.Cloudlane.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.charleszheng44.Cloudlane.svg"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/cloudlane/LICENSE"
+  install -Dm644 third_party/API-Enhanced-LICENSE "$pkgdir/usr/share/licenses/cloudlane/API-Enhanced-LICENSE"
+}

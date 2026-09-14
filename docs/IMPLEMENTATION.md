@@ -1,17 +1,17 @@
-# Native implementation status
+# Cloudlane implementation status
 
 Development preview, 13 September 2026. A working C++/QML implementation is included. This is not a full-parity release; the reviewed [feature ledger](design/COVERAGE.md) remains the release gate.
 
 ## Implemented and locally verified
 
-- Qt6 Quick UI with Spotify-inspired desktop organization: global search, a library sidebar with account playlists, central browsing, and a Now Playing/lyrics/queue panel that docks on wide windows. Omarchy palette/font-size integration and system monospace font remain live.
+- Qt6 Quick UI with Spotify-inspired desktop organization: global search, a library sidebar with account playlists, central browsing, and a Now Playing/lyrics/queue panel that docks on wide windows. Omarchy palette/font-size changes are applied live, including theme symlink swaps and light palettes; the interface is English and uses the system monospace font.
 - Standard vector media controls: prominent play/pause, previous/next, shuffle/repeat, seek, visible volume slider and mute/restore. Compact windows retain the essential controls and use smaller browsing rows.
 - Native WEAPI/EAPI/XEAPI transport using Qt Network and OpenSSL, without a Node service or Electron runtime. Real anonymous search and QR-challenge retrieval pass.
 - Consumer QR approval recovered and persisted in Secret Service; saved-account restoration, playlist listing, daily recommendations and a full-track playback grant verified with an ordinary account. Native background login polling and retry paths have regression tests.
 - libmpv audio and embedded OpenGL video, play/pause/seek, service-grant quality/trial handling, duplicate-safe queue entries, move/remove, future-queue shuffle and repeat.
 - SQLite cache and local-file library, worker scans through TagLib, file/folder import, copied NetEase resource links and desktop file opening.
 - Download engine with separate download grants, durable tasks, three-transfer limit, pause/retry, Range handling, size/checksum verification and atomic final-file rename. The engine is fixture-tested; service grants require account verification.
-- Session D-Bus MPRIS controls, typed metadata and single-instance activation; desktop launcher packaging.
+- Session D-Bus MPRIS controls, typed metadata and single-instance activation; Cloudlane launcher, local installer/uninstaller and an optional Omarchy Quattro bar widget. The legacy storage identity preserves existing login/library state.
 - Automated action tests for request cancellation, account/UI invalidation, QR refresh, correct comment identity, trial bounds and paused FM/video queue restoration.
 
 ## Implemented paths needing an ordinary NetEase account
@@ -27,7 +27,7 @@ Development preview, 13 September 2026. A working C++/QML implementation is incl
 | Spoken/video | Episode playback, resume, speed and sleep timer; online MV/video URL resolution and return to paused music |
 | Activity/inbox | Feed and notification reading; conversation list and history reading |
 
-Source-backed request paths are not proof that each current account response works. No real account writes were performed automatically. The app has no fake music or simulated account responses; the HTML design preview and test fixtures remain separate.
+Source-backed request paths are not proof that each current account response works. No real account writes were performed automatically. The production app has no fake music or simulated account responses. The README screenshot is the real QML interface rendered by a separate test-only backend with fictional data; it proves layout, not service or playback acceptance.
 
 ## Full-release work remaining
 

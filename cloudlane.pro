@@ -1,6 +1,6 @@
 QT += core gui quick quickcontrols2 network sql dbus concurrent opengl
 CONFIG += c++20 link_pkgconfig
-TARGET = yunjian
+TARGET = cloudlane
 TEMPLATE = app
 PKGCONFIG += mpv libsecret-1 openssl libqrencode taglib zlib
 SOURCES += src/main.cpp src/crypto.cpp src/session.cpp src/backend.cpp src/videoitem.cpp src/mpris.cpp
@@ -13,3 +13,6 @@ HEADERS += src/storage.h
 
 SOURCES += src/loginflow.cpp
 HEADERS += src/loginflow.h
+
+SOURCES += src/theme.cpp
+HEADERS += src/theme.h

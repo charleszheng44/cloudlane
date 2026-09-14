@@ -5,6 +5,7 @@
 #include <QDBusMessage>
 #include <QDBusPendingCall>
 #include <QGuiApplication>
+#include <QProcess>
 #include <QSettings>
 #include <QTemporaryDir>
 #include <QtTest>
@@ -19,7 +20,9 @@ private slots:
     Backend backend;
     auto bus = QDBusConnection::sessionBus();
     QVERIFY(bus.isConnected());
-    const QString name = "org.mpris.MediaPlayer2.yunjian_test";
+    const bool pluginTest = qEnvironmentVariable("CLOUDLANE_PLUGIN_TEST") == "1";
+    const QString name = pluginTest ? "org.mpris.MediaPlayer2.cloudlane"
+                                    : "org.mpris.MediaPlayer2.cloudlane_test";
     QVERIFY(bus.registerService(name));
     new MprisRoot(&backend);
     new MprisPlayer(&backend);
@@ -61,6 +64,20 @@ private slots:
     auto setCall = bus.asyncCall(set);
     QTRY_VERIFY(setCall.isFinished());
     QCOMPARE(backend.volume(), 25.0);
+    if (pluginTest) {
+      action.clear();
+      QProcess plugin;
+      plugin.setProcessChannelMode(QProcess::MergedChannels);
+      plugin.start("quickshell", {"-p", "build/plugin-test"});
+      QVERIFY(plugin.waitForStarted());
+      QTRY_VERIFY_WITH_TIMEOUT(plugin.state() == QProcess::NotRunning, 10000);
+      const auto output = plugin.readAll();
+      QVERIFY2(plugin.exitStatus() == QProcess::NormalExit && plugin.exitCode() == 0,
+               output.constData());
+      QVERIFY2(output.contains("Cloudlane widget MPRIS dispatch passed"), output.constData());
+      QCOMPARE(action.count(), 1);
+      QCOMPARE(action.first().first().toString(), QString("next"));
+    }
     bus.unregisterObject("/org/mpris/MediaPlayer2");
     bus.unregisterService(name);
   }

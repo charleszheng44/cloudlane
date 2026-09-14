@@ -18,8 +18,8 @@ public:
       : QDBusAbstractAdaptor(backend), owner(backend) {}
   bool yes() const { return true; }
   bool no() const { return false; }
-  QString identity() const { return QStringLiteral("云间"); }
-  QString desktopEntry() const { return "io.github.charleszheng44.Yunjian"; }
+  QString identity() const { return QStringLiteral("Cloudlane"); }
+  QString desktopEntry() const { return "io.github.charleszheng44.Cloudlane"; }
   QStringList schemes() const { return {"file", "https", "http"}; }
   QStringList mimeTypes() const {
     return {"audio/mpeg", "audio/flac", "audio/ogg", "audio/x-wav",

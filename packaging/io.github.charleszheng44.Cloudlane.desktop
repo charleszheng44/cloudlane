@@ -1,14 +1,13 @@
 [Desktop Entry]
 Type=Application
-Name=云间
-Name[en]=Yunjian
+Name=Cloudlane
 GenericName=NetEase Cloud Music
 Comment=Native music player for Omarchy
-Exec=yunjian %U
-Icon=io.github.charleszheng44.Yunjian
+Exec=cloudlane %U
+Icon=io.github.charleszheng44.Cloudlane
 Terminal=false
 Categories=AudioVideo;Audio;Player;Qt;
-Keywords=music;netease;网易云;云间;
+Keywords=music;netease;cloudlane;
 StartupNotify=true
-StartupWMClass=yunjian
+StartupWMClass=io.github.charleszheng44.Cloudlane
 MimeType=audio/mpeg;audio/flac;audio/ogg;audio/x-wav;video/mp4;

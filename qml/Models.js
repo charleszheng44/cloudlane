@@ -3,7 +3,7 @@ function song(t) {
     t = t || {};
     var artists = t.ar || t.artists || [];
     var album = t.al || t.album || {};
-    return {id: String(t.id || t.songId || ""), name: t.name || t.songName || "无标题",
+    return {id: String(t.id || t.songId || ""), name: t.name || t.songName || "Untitled",
         artist: artists.map(function(a) { return a.name; }).join(" / ") || t.artist || "",
         artistId: artists.length ? String(artists[0].id) : "", album: album.name || t.albumName || "",
         albumId: album.id ? String(album.id) : "", cover: album.picUrl || t.picUrl || "",
@@ -23,7 +23,7 @@ function resource(t, kind) {
         cloud.album = t.album || cloud.album; return cloud;
     }
     return {id: String(t.id || t.vid || t.userId || ""), kind: kind,
-        name: t.name || t.title || t.nickname || "无标题",
+        name: t.name || t.title || t.nickname || "Untitled",
         cover: t.picUrl || t.coverImgUrl || t.cover || t.imgurl || t.avatarUrl || t.pic || "",
         artist: t.artistName || (t.creator || {}).nickname || (t.dj || {}).nickname ||
             (t.artists || []).map(function(a) {return a.name;}).join(" / "),

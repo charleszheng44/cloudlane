@@ -131,7 +131,7 @@ void Session::initialize() {
       secret_password_free(secret);
     }
     if (error) {
-      emit persistenceStatus("系统钥匙环暂不可用，可使用本次会话登录。");
+      emit persistenceStatus("The system keyring is unavailable. You can sign in for this session.");
       g_error_free(error);
     }
   }
@@ -158,7 +158,7 @@ void Session::reset(bool clearSecret) {
     retired->deleteLater();
   }
   for (auto &cb : waiters)
-    cb("登录会话已更改");
+    cb("The sign-in session has changed");
   if (clearSecret && !accountId.isEmpty()) {
     SecretDeadline deadline;
     GError *error = nullptr;
@@ -186,11 +186,11 @@ void Session::save(QString account) {
   GError *error = nullptr;
   const auto bytes = jar->serialize().toBase64();
   bool stored = secret_password_store_sync(
-      &schema, SECRET_COLLECTION_DEFAULT, "云间 · 网易云音乐账户",
+      &schema, SECRET_COLLECTION_DEFAULT, "Cloudlane · NetEase Cloud Music account",
       bytes.constData(), deadline.cancel, &error, "account",
       account.toUtf8().constData(), nullptr);
   if (!stored)
-    emit persistenceStatus("系统钥匙环未保存登录；当前为会话登录。");
+    emit persistenceStatus("The keyring could not save your sign-in. You are signed in for this session only.");
   if (error)
     g_error_free(error);
 }
@@ -221,16 +221,16 @@ void Session::post(
             body->append(reply->readAll());
             QString error;
             if (gen != generation)
-              error = "登录会话已更改";
+              error = "The sign-in session has changed";
             else if (body->size() > 20 * 1024 * 1024)
-              error = "服务响应过大";
+              error = "The service response is too large";
             else if (reply->error() != QNetworkReply::NoError)
               error = reply->errorString();
             else if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute)
                              .toInt() /
                          100 ==
                      3)
-              error = "服务返回了未支持的重定向";
+              error = "The service returned an unsupported redirect";
             done(*body, reply, error);
             reply->deleteLater();
           });
@@ -274,7 +274,7 @@ void Session::bootstrap(std::function<void(QString)> done) {
                  d.value("timestamp").toVariant().toString(), nonce);
              if (root.value("code").toInt() != 200 ||
                  signature != d.value("signature").toString().toLatin1())
-               error = "无法验证播放协议密钥";
+               error = "Could not verify the playback protocol key";
              else
                keyState = TransportCrypto::decodePublicKey(
                    d.value("encryptedData").toString());
@@ -325,14 +325,14 @@ void Session::submit(int id, QString path, QJsonObject data, QString mode,
   if (!network)
     initialize();
   if (!path.startsWith("/api/") || path.contains("..") || path.contains('?')) {
-    complete(id, {}, "无效服务请求");
+    complete(id, {}, "Invalid service request");
     return;
   }
   if (mode == "xeapi") {
     const auto gen = generation;
     bootstrap([this, id, path, data, mode, gen](QString error) {
       if (gen != generation) {
-        complete(id, {}, "登录会话已更改");
+        complete(id, {}, "The sign-in session has changed");
         return;
       }
       if (!error.isEmpty())
@@ -399,7 +399,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
           TransportCrypto::xeapi(path, data, keyState, sessionKey, sessionId);
       url = "https://interface3.music.163.com/xeapi/" + path.mid(5);
     } else {
-      complete(id, {}, "未支持的服务协议");
+      complete(id, {}, "Unsupported service protocol");
       return;
     }
     QByteArray cookieHeader;
@@ -415,7 +415,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
          [this, id, gen, mode](QByteArray body, QNetworkReply *reply,
                                QString error) {
            if (gen != generation) {
-             complete(id, {}, "登录会话已更改");
+             complete(id, {}, "The sign-in session has changed");
              return;
            }
            QJsonObject root;
@@ -426,7 +426,7 @@ void Session::send(int id, const QString &path, QJsonObject data,
                           TransportCrypto::decodeResponse(body), &parse)
                           .object();
                if (parse.error != QJsonParseError::NoError || root.isEmpty())
-                 error = "服务响应格式无法识别";
+                 error = "Unrecognized service response format";
                if (mode == "xeapi" && reply->hasRawHeader("x-encr-ssid") &&
                    reply->hasRawHeader("x-encr-sskey")) {
                  auto key = reply->rawHeader("x-encr-sskey");

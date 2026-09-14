@@ -16,8 +16,8 @@ Button {
         elide: Text.ElideRight
     }
     background: Rectangle {
-        color: control.down || control.selected ? Backend.theme.selection : control.hovered ? Qt.rgba(1,1,1,.07) : "transparent"
+        color: control.down || control.selected ? Backend.theme.selection : control.hovered ? Backend.theme.hover : "transparent"
         border.width: control.activeFocus || (!control.quiet && !control.selected) ? 1 : 0
-        border.color: control.activeFocus ? Backend.theme.accent : "#737c9d"
+        border.color: control.activeFocus ? Backend.theme.accent : Backend.theme.border
     }
 }

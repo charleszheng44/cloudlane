@@ -1,4 +1,4 @@
-# 云间 — native NetEase music for Omarchy
+# Cloudlane — native NetEase music for Omarchy
 
 Design v2 · 13 September 2026 · Working name, not a published brand
 

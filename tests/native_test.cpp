@@ -85,7 +85,7 @@ private slots:
     QTRY_COMPARE(window->width(), 1100);
     QTRY_COMPARE(window->height(), 760);
     QVERIFY(!backend.playing());
-    evaluate("Actions.navigate('我的音乐','本地音乐')");
+    evaluate("Actions.navigate('Your Library','Local music')");
     QCOMPARE(window->property("viewKind").toString(), QString("songs"));
     const QString media = qEnvironmentVariable("YUNJIAN_TEST_MEDIA");
     QVERIFY2(!media.isEmpty(),
@@ -159,7 +159,7 @@ private slots:
     QVERIFY(window->grabWindow().save("build/native-video-test.png"));
     backend.stop();
     QVERIFY(!backend.playing());
-    if (qEnvironmentVariableIsSet("YUNJIAN_LIVE_TESTS")) {
+    if (qEnvironmentVariable("YUNJIAN_LIVE_TESTS") == "1") {
       QVERIFY(QMetaObject::invokeMethod(window, "login"));
       QTRY_VERIFY_WITH_TIMEOUT(!backend.loginQr().isEmpty(), 25000);
       QCOMPARE(backend.loginPhase(), QString("waiting"));
@@ -175,7 +175,7 @@ private slots:
       QCOMPARE(window->property("error").toString(), QString());
       QTest::qWait(200);
       QVERIFY(window->grabWindow().save("build/native-search.png"));
-      evaluate("Actions.navigate('首页')");
+      evaluate("Actions.navigate('Home')");
       QTRY_VERIFY_WITH_TIMEOUT(window->property("loading").toString().isEmpty(),
                                25000);
       QCOMPARE(window->property("error").toString(), QString());
@@ -186,7 +186,7 @@ private slots:
     }
     resize(QSize(1400, 850));
     QTRY_COMPARE(window->width(), 1400);
-    evaluate("window.panel='正在播放'");
+    evaluate("window.panel='Now Playing'");
     QTest::qWait(400);
     QVERIFY(window->grabWindow().save("build/native-spotify-layout.png"));
     evaluate("window.panel=''");
@@ -207,11 +207,18 @@ private slots:
     const double keyboardVolume = backend.volume();
     QTest::keyClick(window, Qt::Key_Right);
     QTRY_VERIFY(backend.volume() > keyboardVolume);
-    evaluate("window.panel='队列'");
+    evaluate("window.panel='Queue'");
     QTest::qWait(300);
     evaluate("window.panel=''");
     QTest::qWait(400);
     QVERIFY(window->grabWindow().save("build/native-narrow.png"));
+    evaluate("playerOptions.open()");
+    QTest::qWait(200);
+    QVERIFY(window->grabWindow().save("build/native-options.png"));
+    evaluate("playerOptions.close(); window.panel='Lyrics'");
+    QTest::qWait(200);
+    QVERIFY(window->grabWindow().save("build/native-lyrics-panel.png"));
+    evaluate("window.panel=''");
     for (const auto &warning : warnings)
       qWarning().noquote() << warning;
     QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join('\n')));
@@ -224,7 +231,7 @@ int main(int argc, char **argv) {
   QCoreApplication::setApplicationName("native-test");
   QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
   QQuickStyle::setStyle("Basic");
-  qmlRegisterType<VideoItem>("Yunjian", 1, 0, "VideoSurface");
+  qmlRegisterType<VideoItem>("Cloudlane", 1, 0, "VideoSurface");
   NativeTest test;
   return QTest::qExec(&test, argc, argv);
 }

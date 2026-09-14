@@ -10,3 +10,10 @@ build/
 *.db
 core
 core.*
+
+# Local release/package artifacts and credentials
+*.pkg.tar.*
+*.AppImage
+*.pem
+*.key
+.env.*

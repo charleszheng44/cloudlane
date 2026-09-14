@@ -5,27 +5,37 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QGuiApplication>
+#include <QLocale>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QTimer>
+#include <QTextStream>
 int main(int argc, char **argv) {
+  QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
   QGuiApplication app(argc, argv);
+  QGuiApplication::setApplicationDisplayName("Cloudlane");
+  QGuiApplication::setDesktopFileName("io.github.charleszheng44.Cloudlane");
+  // Preserve pre-rename settings, SQLite paths and the saved account.
   QCoreApplication::setOrganizationName("Yunjian");
   QCoreApplication::setApplicationName("yunjian");
   QCoreApplication::setApplicationVersion("0.1.0-dev");
   QCommandLineParser parser;
   parser.setApplicationDescription(
-      "云间 · Native NetEase Cloud Music for Omarchy");
+      "Cloudlane · Native NetEase Cloud Music for Omarchy");
   parser.addHelpOption();
-  parser.addVersionOption();
+  parser.addOption({{"v", "version"}, "Display the application version"});
   parser.addOption({"login", "Show consumer QR login"});
   parser.addOption({"isolated", "Do not register the desktop media service"});
   parser.addOption({"smoke-test", "Launch briefly for a UI smoke check"});
   parser.addPositionalArgument(
       "urls", "Local media files or NetEase resource links", "[urls...]");
   parser.process(app);
+  if (parser.isSet("version")) {
+    QTextStream(stdout) << "Cloudlane " << app.applicationVersion() << Qt::endl;
+    return 0;
+  }
   const auto urls = parser.positionalArguments();
   const bool showLogin = parser.isSet("login");
   const bool smokeTest = parser.isSet("smoke-test");
@@ -34,20 +44,20 @@ int main(int argc, char **argv) {
   const bool isolated = parser.isSet("isolated") || smokeTest;
   auto bus = QDBusConnection::sessionBus();
   if (!isolated && bus.isConnected() &&
-      !bus.registerService("org.mpris.MediaPlayer2.yunjian")) {
-    bus.call(QDBusMessage::createMethodCall("org.mpris.MediaPlayer2.yunjian",
+      !bus.registerService("org.mpris.MediaPlayer2.cloudlane")) {
+    bus.call(QDBusMessage::createMethodCall("org.mpris.MediaPlayer2.cloudlane",
                                             "/org/mpris/MediaPlayer2",
                                             "org.mpris.MediaPlayer2", "Raise"));
     for (const auto &uri : urls) {
       auto message = QDBusMessage::createMethodCall(
-          "org.mpris.MediaPlayer2.yunjian", "/org/mpris/MediaPlayer2",
+          "org.mpris.MediaPlayer2.cloudlane", "/org/mpris/MediaPlayer2",
           "org.mpris.MediaPlayer2.Player", "OpenUri");
       message << uri;
       bus.call(message);
     }
     return 0;
   }
-  qmlRegisterType<VideoItem>("Yunjian", 1, 0, "VideoSurface");
+  qmlRegisterType<VideoItem>("Cloudlane", 1, 0, "VideoSurface");
   Backend backend;
   if (!isolated) {
     new MprisRoot(&backend);

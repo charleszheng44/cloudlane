@@ -25,7 +25,7 @@ void LoginFlow::start() {
     verifyAccount(true, epoch);
     return;
   }
-  transition("loading", "正在获取二维码…");
+  transition("loading", "Getting a QR code…");
   emit challenge({});
   request("/api/login/qrcode/unikey", {{"type", 3}}, "eapi",
           [this, epoch](QJsonObject data, QString error) {
@@ -36,7 +36,7 @@ void LoginFlow::start() {
               key = data.value("data").toObject().value("unikey").toString();
             if (!error.isEmpty() || key.isEmpty()) {
               transition("error",
-                         error.isEmpty() ? "二维码获取失败，请刷新" : error);
+                         error.isEmpty() ? "Could not get a QR code. Please refresh." : error);
               return;
             }
             QUrl url("https://music.163.com/login");
@@ -44,7 +44,7 @@ void LoginFlow::start() {
             query.addQueryItem("codekey", key);
             url.setQuery(query);
             emit challenge(url.toString());
-            transition("waiting", "使用网易云音乐手机 App 扫码确认");
+            transition("waiting", "Scan with the NetEase Cloud Music mobile app and confirm sign-in.");
             timer.start();
           });
 }
@@ -79,7 +79,7 @@ void LoginFlow::poll() {
             inFlight = false;
             const int code = data.value("code").toVariant().toInt();
             if (!error.isEmpty()) {
-              transition("waiting", error + " · 正在重试");
+              transition("waiting", error + " · Retrying");
               timer.start();
               return;
             }
@@ -90,24 +90,24 @@ void LoginFlow::poll() {
               return;
             }
             if (code == 800) {
-              transition("expired", "二维码已过期，请刷新");
+              transition("expired", "QR code expired. Please refresh.");
               return;
             }
             if (code == 802)
-              transition("scanned", "已扫码，等待手机确认…");
+              transition("scanned", "Scanned. Waiting for confirmation on your phone…");
             else if (code == 801)
-              transition("waiting", "使用网易云音乐手机 App 扫码确认");
+              transition("waiting", "Scan with the NetEase Cloud Music mobile app and confirm sign-in.");
             else {
               qCWarning(loginLog) << "Unexpected QR status" << code;
               if (++statusRetries <= 5) {
                 transition(
                     "waiting",
-                    QString("登录服务暂未完成确认（%1），正在重试…").arg(code));
+                    QString("Sign-in is not confirmed yet (code %1). Retrying…").arg(code));
                 timer.start(pollInterval * 2);
               } else {
                 transition(
                     "error",
-                    QString("登录服务返回状态 %1，请刷新重试").arg(code));
+                    QString("Sign-in returned code %1. Please refresh and try again.").arg(code));
               }
               return;
             }
@@ -118,7 +118,7 @@ void LoginFlow::poll() {
 }
 void LoginFlow::verifyAccount(bool afterLogin, quint64 epoch, int attempt) {
   if (afterLogin)
-    transition("authorizing", "已授权，正在同步账户…");
+    transition("authorizing", "Approved. Syncing your account…");
   request(
       "/api/nuser/account/get", {}, "weapi",
       [this, afterLogin, epoch, attempt](QJsonObject data, QString error) {
@@ -133,7 +133,7 @@ void LoginFlow::verifyAccount(bool afterLogin, quint64 epoch, int attempt) {
           persist(profile);
           authorized = true;
           emit challenge({});
-          transition("authenticated", "已登录");
+          transition("authenticated", "Signed in");
           emit accountReady(profile, afterLogin);
           return;
         }
@@ -149,11 +149,11 @@ void LoginFlow::verifyAccount(bool afterLogin, quint64 epoch, int attempt) {
              data.value("code").toVariant().toInt() == 301)) {
           authorized = false;
           if (afterLogin)
-            transition("expired", "登录会话已失效，请刷新二维码");
+            transition("expired", "Your session expired. Please refresh the QR code.");
         } else if (afterLogin)
           transition("account-error",
                      error.isEmpty()
-                         ? "授权已确认，账户同步暂未完成；请重试同步"
+                         ? "Sign-in approved, but account sync is incomplete. Please retry sync."
                          : error);
       });
 }

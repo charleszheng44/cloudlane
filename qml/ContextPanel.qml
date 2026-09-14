@@ -12,32 +12,34 @@ Rectangle {
         RowLayout {
             Layout.fillWidth: true
             Label { text: app.panel; font.pixelSize: 20; Layout.fillWidth: true }
-            ActionButton { text: "关闭"; quiet: true; onClicked: app.panel="" }
+            ActionButton { text: "Close"; quiet: true; onClicked: app.panel="" }
         }
         Label {
-            visible: app.panel === "评论"
+            visible: app.panel === "Comments"
             text: app.contextTrack.name || ""; Layout.fillWidth: true; elide: Text.ElideRight
             color: Backend.theme.accent
         }
         RowLayout {
-            visible: app.panel === "队列"; Layout.fillWidth: true
-            Label { text: app.queue.length + " 首"; Layout.fillWidth: true }
-            ActionButton { text: "打乱后续"; enabled: !app.fm && app.queue.length>1; onClicked: Actions.shuffle() }
+            visible: app.panel === "Queue"; Layout.fillWidth: true
+            Label { text: app.queue.length + " tracks"; Layout.fillWidth: true }
+            ActionButton { text: "Shuffle"; enabled: !app.fm && app.queue.length>1; onClicked: Actions.shuffle() }
         }
-        RowLayout {
-            visible: app.panel === "歌词"; Layout.fillWidth: true
-            CheckBox { text:"翻译"; checked:app.translation; onToggled:app.translation=checked }
-            Label { text:"偏移" }
-            SpinBox { from:-100; to:100; value:app.lyricOffset*10; onValueModified:app.lyricOffset=value/10; Layout.fillWidth:true }
-            Label { text:"×0.1秒"; font.pixelSize:11 }
+        ColumnLayout {
+            visible: app.panel === "Lyrics"; Layout.fillWidth: true
+            CheckBox { text:"Translation"; checked:app.translation; onToggled:app.translation=checked }
+            RowLayout {
+                Label { text:"Offset" }
+                SpinBox { from:-100; to:100; value:app.lyricOffset*10; onValueModified:app.lyricOffset=value/10; Layout.fillWidth:true }
+                Label { text:"× 0.1 sec"; font.pixelSize:11 }
+            }
         }
         ComboBox {
-            visible: app.panel === "评论"; model:["推荐评论","最新评论"]
+            visible: app.panel === "Comments"; model:["Top comments","Newest comments"]
             onActivated:{app.commentSort=currentIndex===0?99:3;Actions.comments(app.contextTrack,false)}
         }
-        Label { text:app.panelError; visible:app.panel==="评论"&&text.length>0; wrapMode:Text.Wrap; Layout.fillWidth:true; color:Backend.theme.red }
+        Label { text:app.panelError; visible:app.panel==="Comments"&&text.length>0; wrapMode:Text.Wrap; Layout.fillWidth:true; color:Backend.theme.red }
         ColumnLayout {
-            visible: app.panel === "正在播放"
+            visible: app.panel === "Now Playing"
             Layout.fillWidth: true; Layout.fillHeight: true
             spacing: 16
             Rectangle {
@@ -46,19 +48,20 @@ Rectangle {
                 PlayerIcon { anchors.centerIn: parent; width: 64; height: 64; name: "music"; opacity: .35 }
                 Image { anchors.fill: parent; source: panel.app.currentTrack.cover || ""; fillMode: Image.PreserveAspectCrop; asynchronous: true }
             }
-            Label { text: app.currentTrack.name || "选择一首音乐"; font.pixelSize: 22; font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap; textFormat: Text.PlainText }
+            Label { text: app.currentTrack.name || "Choose a track"; font.pixelSize: 22; font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap; textFormat: Text.PlainText }
             Label { text: app.currentTrack.artist || ""; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .65; textFormat: Text.PlainText }
             Label { text: app.currentTrack.album || ""; visible: !!text; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .65; textFormat: Text.PlainText }
             Label { text: app.playerStatus || app.actualQuality; visible: !!text; Layout.fillWidth: true; wrapMode: Text.Wrap; opacity: .7 }
             Item { Layout.fillHeight: true }
-            RowLayout {
-                ActionButton { text: "歌词"; onClicked: panel.app.panel = "歌词" }
-                ActionButton { text: "队列"; onClicked: panel.app.panel = "队列" }
-                ActionButton { text: "评论"; enabled: !!Models.commentThread(panel.app.currentTrack); onClicked: Actions.comments(panel.app.currentTrack, false) }
+            Flow {
+                Layout.fillWidth:true; spacing:8
+                ActionButton { text: "Lyrics"; onClicked: panel.app.panel = "Lyrics" }
+                ActionButton { text: "Queue"; onClicked: panel.app.panel = "Queue" }
+                ActionButton { text: "Comments"; enabled: !!Models.commentThread(panel.app.currentTrack); onClicked: Actions.comments(panel.app.currentTrack, false) }
             }
         }
         ListView {
-            id: queueList; visible:app.panel==="队列"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
+            id: queueList; visible:app.panel==="Queue"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
             model:app.queue; spacing:4; ScrollBar.vertical:ScrollBar{}
             delegate:Rectangle {
                 required property var modelData; required property int index
@@ -69,16 +72,16 @@ Rectangle {
                     ActionButton { text:modelData.name+" · "+modelData.artist; quiet:true; Layout.fillWidth:true; onClicked:Actions.queuePlay(index) }
                     RowLayout {
                         Layout.alignment:Qt.AlignRight
-                        ActionButton { text:"上移"; quiet:true; enabled:index>0; onClicked:Actions.moveQueue(index,index-1) }
-                        ActionButton { text:"下移"; quiet:true; enabled:index+1<panel.app.queue.length; onClicked:Actions.moveQueue(index,index+1) }
-                        ActionButton { text:"移除"; quiet:true; onClicked:Actions.removeQueue(index) }
+                        ActionButton { text:"↑"; Accessible.name:"Move up"; quiet:true; enabled:index>0; onClicked:Actions.moveQueue(index,index-1) }
+                        ActionButton { text:"↓"; Accessible.name:"Move down"; quiet:true; enabled:index+1<panel.app.queue.length; onClicked:Actions.moveQueue(index,index+1) }
+                        ActionButton { text:"Remove"; quiet:true; onClicked:Actions.removeQueue(index) }
                     }
                 }
             }
-            Label { anchors.centerIn:parent; visible:!panel.app.queue.length; text:"队列为空" }
+            Label { anchors.centerIn:parent; visible:!panel.app.queue.length; text:"Your queue is empty" }
         }
         ListView {
-            id: lyricsList; visible:app.panel==="歌词"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
+            id: lyricsList; visible:app.panel==="Lyrics"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
             model:app.lyrics; spacing:12; ScrollBar.vertical:ScrollBar{}
             property int activeLine:Models.lyricIndex(panel.app.lyrics,Backend.position+panel.app.lyricOffset)
             onActiveLineChanged:if(!moving&&activeLine>=0)positionViewAtIndex(activeLine,ListView.Center)
@@ -92,10 +95,10 @@ Rectangle {
                 }
                 onClicked:Backend.seek(Math.max(0,modelData.time-panel.app.lyricOffset))
             }
-            Label { anchors.centerIn:parent; visible:!panel.app.lyrics.length; text:"暂无同步歌词" }
+            Label { anchors.centerIn:parent; visible:!panel.app.lyrics.length; text:"No synced lyrics available" }
         }
         ListView {
-            id: commentsList; visible:app.panel==="评论"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
+            id: commentsList; visible:app.panel==="Comments"; Layout.fillWidth:true; Layout.fillHeight:true; clip:true
             model:app.comments; spacing:12; ScrollBar.vertical:ScrollBar{}
             delegate:Rectangle {
                 required property var modelData
@@ -104,12 +107,12 @@ Rectangle {
                     id:commentContent; anchors.left:parent.left; anchors.right:parent.right; anchors.top:parent.top; anchors.margins:12
                     Label { text:(modelData.user||{}).nickname||""; Layout.fillWidth:true; elide:Text.ElideRight; color:Backend.theme.accent }
                     Label { text:modelData.content||""; Layout.fillWidth:true; wrapMode:Text.Wrap; textFormat:Text.PlainText }
-                    Label { visible:!!(modelData.beReplied||[]).length; text:(modelData.beReplied||[]).length?"回复 · "+(modelData.beReplied[0].content||""):""; Layout.fillWidth:true; wrapMode:Text.Wrap; opacity:.7; textFormat:Text.PlainText }
-                    ActionButton { text:(modelData.liked?"已赞 ":"赞 ")+(modelData.likedCount||0); quiet:true; enabled:!panel.app.writeBusy; onClicked:Actions.likeComment(modelData) }
+                    Label { visible:!!(modelData.beReplied||[]).length; text:(modelData.beReplied||[]).length?"Reply · "+(modelData.beReplied[0].content||""):""; Layout.fillWidth:true; wrapMode:Text.Wrap; opacity:.7; textFormat:Text.PlainText }
+                    ActionButton { text:(modelData.liked?"Liked · ":"Like · ")+(modelData.likedCount||0); quiet:true; enabled:!panel.app.writeBusy; onClicked:Actions.likeComment(modelData) }
                 }
             }
-            footer:ActionButton { text:"更多评论"; width:commentsList.width; visible:panel.app.commentMore; onClicked:{panel.app.commentPage++;Actions.comments(panel.app.contextTrack,true)} }
-            Label { anchors.centerIn:parent; visible:!panel.app.comments.length&&!panel.app.panelError; text:"暂无评论" }
+            footer:ActionButton { text:"More comments"; width:commentsList.width; visible:panel.app.commentMore; onClicked:{panel.app.commentPage++;Actions.comments(panel.app.contextTrack,true)} }
+            Label { anchors.centerIn:parent; visible:!panel.app.comments.length&&!panel.app.panelError; text:"No comments yet" }
         }
     }
 }

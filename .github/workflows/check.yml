@@ -1,0 +1,39 @@
+name: Build and test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    timeout-minutes: 20
+    steps:
+      - name: Install distribution build and test dependencies
+        run: pacman -Syu --noconfirm --needed git qt6-base qt6-declarative qt6-wayland qt6-imageformats mpv libsecret openssl qrencode taglib zlib nodejs ffmpeg dbus desktop-file-utils
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Build native app
+        run: |
+          mkdir -p build
+          qmake6 -o build/Makefile cloudlane.pro
+          make -C build -j2
+      - name: Offline regression suite
+        run: dbus-run-session -- scripts/check.sh
+      - name: Validate launcher and shell scripts
+        run: |
+          desktop-file-validate packaging/io.github.charleszheng44.Cloudlane.desktop
+          for script in scripts/*.sh packaging/PKGBUILD; do bash -n "$script"; done
+      - name: Install and uninstall in a disposable prefix
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          export CLOUDLANE_PREFIX="$RUNNER_TEMP/cloudlane-install"
+          scripts/install-local.sh
+          "$CLOUDLANE_PREFIX/bin/cloudlane" --help
+          scripts/uninstall-local.sh
+          test ! -e "$CLOUDLANE_PREFIX/bin/cloudlane"

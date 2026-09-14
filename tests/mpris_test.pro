@@ -9,3 +9,6 @@ HEADERS += ../src/backend.h ../src/mpris.h ../src/session.h ../src/crypto.h ../s
 
 SOURCES += ../src/loginflow.cpp
 HEADERS += ../src/loginflow.h
+
+SOURCES += ../src/theme.cpp
+HEADERS += ../src/theme.h
